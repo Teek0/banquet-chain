@@ -92,5 +92,5 @@ MonoBehaviour:
     icon: {fileID: 0}
     actorId: servicio
     reactionType: 3
-    durationBeforeNextStep: 0.7
+    durationBeforeNextStep: 0.6
     transformsDish: 0

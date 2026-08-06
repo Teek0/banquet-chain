@@ -28,7 +28,7 @@ public sealed class CatController : MonoBehaviour
     [SerializeField] private Color satisfiedColor = new(0.38f, 0.72f, 0.48f, 1f);
 
     [Header("Timing")]
-    [SerializeField, Min(0.05f)] private float receivingDuration = 0.9f;
+    [SerializeField, Min(0.05f)] private float receivingDuration = 0.6f;
     [SerializeField, Min(0f)] private float transitionSpeed = 14f;
 
     private Vector3 baseLocalPosition;

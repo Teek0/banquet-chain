@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public sealed class PresentationSceneTests
 {
@@ -72,6 +73,72 @@ public sealed class PresentationSceneTests
         finally
         {
             EditorSceneManager.CloseScene(scene, true);
+        }
+    }
+
+    [TestCase("Assets/_Project/Scenes/MainMenu.unity")]
+    [TestCase("Assets/_Project/Scenes/Playground.unity")]
+    [TestCase("Assets/_Project/Scenes/Credits.unity")]
+    public void Scene_UsesTargetReferenceResolution(string scenePath)
+    {
+        Scene scene = OpenScene(scenePath);
+
+        try
+        {
+            CanvasScaler scaler = FindInScene<CanvasScaler>(scene);
+            Assert.That(scaler, Is.Not.Null);
+            Assert.That(scaler.uiScaleMode, Is.EqualTo(CanvasScaler.ScaleMode.ScaleWithScreenSize));
+            Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(960f, 600f)));
+            Assert.That(scaler.matchWidthOrHeight, Is.EqualTo(0.5f).Within(0.01f));
+        }
+        finally
+        {
+            EditorSceneManager.CloseScene(scene, true);
+        }
+    }
+
+    [Test]
+    public void Playground_ActiveWordIsLargeAndAutoSized()
+    {
+        Scene scene = OpenScene("Assets/_Project/Scenes/Playground.unity");
+
+        try
+        {
+            TMP_Text word = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<TMP_Text>(true))
+                .First(label => label.name == "WordLabel");
+            Assert.That(word.fontSize, Is.GreaterThanOrEqualTo(52f));
+            Assert.That(word.enableAutoSizing, Is.True);
+            Assert.That(word.fontSizeMin, Is.GreaterThanOrEqualTo(38f));
+        }
+        finally
+        {
+            EditorSceneManager.CloseScene(scene, true);
+        }
+    }
+
+    [Test]
+    public void Recipes_KeepStepDelaysWithinReadableRhythm()
+    {
+        string[] paths =
+        {
+            "Assets/_Project/Data/Recipes/Recipe_PanCaliente.asset",
+            "Assets/_Project/Data/Recipes/Recipe_SopaVerduras.asset",
+            "Assets/_Project/Data/Recipes/Recipe_PlatoDelPueblo.asset"
+        };
+
+        foreach (string path in paths)
+        {
+            RecipeData recipe = AssetDatabase.LoadAssetAtPath<RecipeData>(path);
+
+            foreach (RecipeStep step in recipe.Steps)
+            {
+                Assert.That(
+                    step.DurationBeforeNextStep,
+                    Is.InRange(0.2f, 0.6f),
+                    $"{recipe.DisplayName}: {step.ExpectedWord}"
+                );
+            }
         }
     }
 

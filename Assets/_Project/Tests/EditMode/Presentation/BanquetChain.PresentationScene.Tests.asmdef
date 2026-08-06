@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "BanquetChain.Flow",
+        "BanquetChain.Recipes",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [

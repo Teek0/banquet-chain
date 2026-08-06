@@ -232,9 +232,9 @@ public sealed class KitchenActor : MonoBehaviour
         {
             float duration = Mathf.Max(0.05f, celebrationDuration);
             float phase = 1f - celebrationTimeRemaining / duration;
-            scaleBoost = 0.06f + Mathf.Sin(phase * Mathf.PI * 6f) * 0.035f;
-            tilt = Mathf.Sin(phase * Mathf.PI * 8f) * 4f;
-            bounce = Mathf.Abs(Mathf.Sin(phase * Mathf.PI * 4f)) * 16f;
+            scaleBoost = 0.05f + Mathf.Sin(phase * Mathf.PI * 5f) * 0.025f;
+            tilt = Mathf.Sin(phase * Mathf.PI * 6f) * 3f;
+            bounce = Mathf.Abs(Mathf.Sin(phase * Mathf.PI * 3f)) * 12f;
         }
 
         Vector3 desiredPosition = baseLocalPosition + Vector3.up * bounce;

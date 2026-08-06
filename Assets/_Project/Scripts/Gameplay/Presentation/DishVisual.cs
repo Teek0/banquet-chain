@@ -31,7 +31,7 @@ public sealed class DishVisual : MonoBehaviour
 
     [Header("Timing")]
     [SerializeField, Min(0.05f)] private float buildPulseDuration = 0.32f;
-    [SerializeField, Min(0.05f)] private float servingDuration = 0.72f;
+    [SerializeField, Min(0.05f)] private float servingDuration = 0.6f;
     [SerializeField, Min(0f)] private float transitionSpeed = 18f;
 
     private Vector3 baseLocalPosition;
