@@ -10,7 +10,7 @@ es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 19 del backlog. Ya existe una
+Están terminados los bloques 01 a 05 y 07 a 20 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -49,10 +49,13 @@ partida completa provisional dentro del Editor:
 - Las tres escenas usan referencia 960 × 600; la palabra activa se autoajusta,
   los estados no dependen solo del color y las reacciones evitan movimiento
   excesivo.
-- Hay 42/42 pruebas Edit Mode y 23/23 pruebas Play Mode aprobadas.
+- La pasada integral cubre errores, Backspace, teclas ignoradas, pausa,
+  reinicios intermedios, tres recetas, final y referencias críticas.
+- Hay 47/47 pruebas Edit Mode y 24/24 pruebas Play Mode aprobadas.
 
-El juego todavía usa presentación visual provisional. El siguiente bloque es
-la tarea 20: QA integral y corrección de bloqueantes dentro del Editor.
+No hay defectos bloqueantes confirmados dentro del Editor. El siguiente y
+último bloque es T21, la build candidata; queda sin ejecutar hasta recibir una
+solicitud explícita.
 
 ## Flujo de escenas
 
@@ -124,9 +127,9 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 42 pruebas de escritura, datos, HUD y
+- `Assets/_Project/Tests/EditMode/`: 47 pruebas de escritura, datos, HUD y
   escenas de presentación.
-- `Assets/_Project/Tests/PlayMode/`: 23 pruebas del ciclo, actores, plato, gato
+- `Assets/_Project/Tests/PlayMode/`: 24 pruebas del ciclo, actores, plato, gato
   y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
@@ -154,13 +157,13 @@ composición actual de `Playground`.
    del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
-11. En `Window → General → Test Runner`, ejecuta las 42 pruebas de `EditMode` y
-    las 23 pruebas de `PlayMode`.
+11. En `Window → General → Test Runner`, ejecuta las 47 pruebas de `EditMode` y
+    las 24 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.
 
-La compilación WebGL está pospuesta. No se generará un build hasta que exista
-un juego completo y representativo dentro del Editor.
+La compilación WebGL está pospuesta. El juego ya está completo y validado dentro
+del Editor, pero T21 no se ejecutará sin una solicitud explícita de build.
 
 ## Convenciones
 

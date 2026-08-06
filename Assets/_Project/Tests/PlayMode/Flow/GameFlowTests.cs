@@ -81,6 +81,51 @@ public sealed class GameFlowTests
         Assert.That(runner.CurrentRecipe, Is.SameAs(recipes[0]));
     }
 
+    [UnityTest]
+    public IEnumerator MidGameRestart_RecoversAndStillCompletesFullBanquet()
+    {
+        RecipeData[] recipes = CreateRecipes(3);
+        (RecipeRunner runner, TypingInput typingInput) = CreateRunner();
+        CatController cat = CreateCat(runner);
+        GameFlow flow = CreateFlow(runner, cat, recipes);
+
+        Assert.That(flow.StartGame(), Is.True);
+        yield return WaitForRunnerState(runner, RecipeRunnerState.AwaitingInput);
+        CompleteCurrentWord(typingInput);
+        yield return WaitForRecipeIndex(flow, 1);
+        yield return WaitForRunnerState(runner, RecipeRunnerState.AwaitingInput);
+
+        typingInput.ProcessCharacter('x');
+        Assert.That(typingInput.Progress, Is.Zero);
+        typingInput.ProcessCharacter('s');
+        typingInput.ProcessCharacter('e');
+        typingInput.ProcessBackspace();
+        Assert.That(typingInput.Progress, Is.EqualTo(1));
+
+        Assert.That(flow.RestartGame(), Is.True);
+        yield return WaitForRunnerState(runner, RecipeRunnerState.AwaitingInput);
+        Assert.That(flow.CurrentRecipeIndex, Is.Zero);
+        Assert.That(typingInput.Progress, Is.Zero);
+
+        for (int index = 0; index < recipes.Length; index++)
+        {
+            CompleteCurrentWord(typingInput);
+
+            if (index < recipes.Length - 1)
+            {
+                yield return WaitForRecipeIndex(flow, index + 1);
+                yield return WaitForRunnerState(
+                    runner,
+                    RecipeRunnerState.AwaitingInput
+                );
+            }
+        }
+
+        yield return WaitForFlowState(flow, GameFlowState.Completed);
+        Assert.That(flow.CompletedDishes, Is.EqualTo(3));
+        Assert.That(cat.State, Is.EqualTo(CatVisualState.Satisfied));
+    }
+
     private (RecipeRunner runner, TypingInput typingInput) CreateRunner()
     {
         GameObject runnerObject = new("Flow runner");

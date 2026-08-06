@@ -55,6 +55,19 @@ public sealed class TypingInputTests
     }
 
     [Test]
+    public void WrongLetter_AllowsImmediateRecovery()
+    {
+        typingInput.SetExpectedWord("sal");
+        typingInput.ProcessCharacter('x');
+        typingInput.ProcessCharacter('s');
+        typingInput.ProcessCharacter('a');
+        typingInput.ProcessCharacter('l');
+
+        Assert.That(typingInput.IsComplete, Is.True);
+        Assert.That(typingInput.Progress, Is.EqualTo(3));
+    }
+
+    [Test]
     public void ProcessCharacter_EmitsOneEventForEachAttempt()
     {
         int correctCharacters = 0;
@@ -83,6 +96,43 @@ public sealed class TypingInputTests
         typingInput.ProcessBackspace();
 
         Assert.That(typingInput.Progress, Is.Zero);
+    }
+
+    [TestCase(0, 0)]
+    [TestCase(2, 1)]
+    [TestCase(3, 2)]
+    public void ProcessBackspace_HandlesStartMiddleAndEnd(
+        int initialProgress,
+        int expectedProgress
+    )
+    {
+        typingInput.SetExpectedWord("sopa");
+
+        for (int index = 0; index < initialProgress; index++)
+        {
+            typingInput.ProcessCharacter("sopa"[index]);
+        }
+
+        typingInput.ProcessBackspace();
+
+        Assert.That(typingInput.Progress, Is.EqualTo(expectedProgress));
+    }
+
+    [Test]
+    public void ProcessCharacter_IgnoresControlAndNonLetterKeys()
+    {
+        int attempts = 0;
+        typingInput.SetExpectedWord("sal");
+        typingInput.CorrectCharacterEntered += (_, _) => attempts++;
+        typingInput.IncorrectCharacterEntered += (_, _) => attempts++;
+
+        foreach (char character in new[] { '\n', '\t', '1', ' ', '-' })
+        {
+            typingInput.ProcessCharacter(character);
+        }
+
+        Assert.That(typingInput.Progress, Is.Zero);
+        Assert.That(attempts, Is.Zero);
     }
 
     [Test]
