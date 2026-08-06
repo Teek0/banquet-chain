@@ -5,7 +5,8 @@
         "BanquetChain.Flow",
         "BanquetChain.Recipes",
         "BanquetChain.Typing",
-        "BanquetChain.Presentation"
+        "BanquetChain.Presentation",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

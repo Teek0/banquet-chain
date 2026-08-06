@@ -10,7 +10,7 @@ es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 14 del backlog. Ya existe una
+Están terminados los bloques 01 a 05 y 07 a 15 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -37,10 +37,13 @@ partida completa provisional dentro del Editor:
   mediante el cargador de escenas existente.
 - Las recetas largas usan explícitamente `Despensa`, `Horno` y `Servicio`; la
   palabra `compartir` hace reaccionar a toda la cocina antes de la entrega.
-- Hay 31/31 pruebas Edit Mode y 18/18 pruebas Play Mode aprobadas.
+- Pan caliente incluye un tutorial contextual que explica la palabra activa,
+  letras correctas, error, Backspace y la reacción de la cocina; se oculta al
+  terminar y vuelve a aparecer al reiniciar.
+- Hay 31/31 pruebas Edit Mode y 21/21 pruebas Play Mode aprobadas.
 
 El juego todavía usa presentación visual provisional. El siguiente bloque es
-la tarea 15: enseñar la mecanografía de forma contextual durante Pan caliente.
+la tarea 16: cerrar el contrato entre pausa, mecanografía y reinicio.
 
 ## Flujo de escenas
 
@@ -107,13 +110,13 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales y
   coordinación de actores, plato y gato por eventos.
 - `Assets/_Project/Scripts/Gameplay/Flow/`: coordinación de las tres recetas,
-  celebraciones y cierre de partida.
+  tutorial, celebraciones y cierre de partida.
 - `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
 - `Assets/_Project/Tests/EditMode/`: 31 pruebas de escritura, datos y HUD.
-- `Assets/_Project/Tests/PlayMode/`: 18 pruebas del ciclo, actores, plato, gato
+- `Assets/_Project/Tests/PlayMode/`: 21 pruebas del ciclo, actores, plato, gato
   y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
@@ -142,7 +145,7 @@ composición actual de `Playground`.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
 11. En `Window → General → Test Runner`, ejecuta las 31 pruebas de `EditMode` y
-    las 18 pruebas de `PlayMode`.
+    las 21 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.
 

@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "BanquetChain.Recipes",
+        "BanquetChain.Typing",
         "BanquetChain.Presentation",
         "Unity.TextMeshPro"
     ],
