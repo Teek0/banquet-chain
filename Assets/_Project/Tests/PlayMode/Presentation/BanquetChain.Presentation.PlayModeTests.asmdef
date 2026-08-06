@@ -1,0 +1,21 @@
+{
+    "name": "BanquetChain.Presentation.PlayModeTests",
+    "rootNamespace": "",
+    "references": [
+        "BanquetChain.Presentation",
+        "BanquetChain.Recipes",
+        "BanquetChain.Typing"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

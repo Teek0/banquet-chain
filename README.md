@@ -9,7 +9,7 @@ Esa carpeta es memoria local de trabajo y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 09 del backlog. Ya existe el primer
+Están terminados los bloques 01 a 05 y 07 a 10 del backlog. Ya existe el primer
 bucle jugable provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -25,11 +25,14 @@ bucle jugable provisional dentro del Editor:
   `pan → mantequilla → tostar → servir`.
 - El HUD superior muestra plato, pedido, estado, paso activo, pasos posteriores
   atenuados y la indicación `ESC · PAUSA` sin consultar datos cada frame.
-- Hay 23/23 pruebas Edit Mode y 4/4 pruebas Play Mode aprobadas.
+- `Despensa`, `Horno` y `Servicio` se resaltan según el paso activo, anticipan
+  con el progreso escrito, reaccionan al completar la palabra y celebran el
+  plato terminado.
+- Hay 23/23 pruebas Edit Mode y 9/9 pruebas Play Mode aprobadas.
 
-Todavía no hay actores de cocina, reacción del gato, progresión entre las tres
-recetas ni arte final. El siguiente bloque es la tarea 10: conectar actores de
-cocina y reacciones provisionales.
+Todavía no hay transformación visual del plato, reacción del gato, progresión
+entre las tres recetas ni arte final. El siguiente bloque es la tarea 11:
+mostrar la transformación progresiva del plato.
 
 ## Flujo de escenas
 
@@ -90,12 +93,14 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scenes/Playground.unity`: escena jugable y cocina fija.
 - `Assets/_Project/Scripts/Gameplay/Typing/`: normalizador y entrada de texto.
 - `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
+- `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales y
+  coordinación de reacciones por eventos.
 - `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
 - `Assets/_Project/Tests/EditMode/`: 23 pruebas de escritura, datos y HUD.
-- `Assets/_Project/Tests/PlayMode/`: 4 pruebas del ciclo real de receta.
+- `Assets/_Project/Tests/PlayMode/`: 9 pruebas del ciclo real y los actores.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
 Los scripts y prefabs heredados de plataformas se conservan como referencia,
@@ -112,11 +117,14 @@ composición actual de `Playground`.
    configurada y luego aparezca el siguiente paso.
 6. Comprueba que el HUD marque el paso activo, atenúe los posteriores y muestre
    los completados con una marca.
-7. Al terminar `servir`, confirma que el HUD muestre `RECETA COMPLETADA` y que
-   no se acepte más texto.
-8. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
-   las 4 pruebas de `PlayMode`.
-9. Opcionalmente, inicia desde `Boot` y comprueba `MainMenu → Playground`.
+7. Comprueba que `pan` y `mantequilla` señalen `Despensa`, `tostar` señale
+   `Horno` y `servir` señale `Servicio`; cada mesa debe anticipar al escribir y
+   rebotar al completar su palabra.
+8. Al terminar `servir`, confirma que las tres mesas celebren, que el HUD
+   muestre `RECETA COMPLETADA` y que no se acepte más texto.
+9. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
+   las 9 pruebas de `PlayMode`.
+10. Opcionalmente, inicia desde `Boot` y comprueba `MainMenu → Playground`.
 
 La compilación WebGL está pospuesta. No se generará un build hasta que exista
 un juego completo y representativo dentro del Editor.
