@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 162214346}
   - component: {fileID: 162214345}
   - component: {fileID: 162214344}
+  - component: {fileID: 162214349}
   m_Layer: 5
   m_Name: WordBubble
   m_TagString: Untagged
@@ -178,7 +179,7 @@ MonoBehaviour:
   stateLabel: {fileID: 617526855}
   wordLabel: {fileID: 497624129}
   feedbackLabel: {fileID: 1791559988}
-  initialWord: mantequilla
+  initialWord:
   errorDuration: 0.35
   completionDuration: 0.8
   activeColor: {r: 1, g: 0.82, b: 0.28, a: 1}
@@ -251,6 +252,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 162214342}
   m_CullTransparentMesh: 1
+--- !u!114 &162214349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162214342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629e9982a61f421e8fde7f62b29a251d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: BanquetChain.Recipes::RecipeRunner
+  recipe: {fileID: 11400000, guid: 3ed68ad4e2844618b127024e2d1ec43c, type: 2}
+  typingInput: {fileID: 162214345}
+  playOnStart: 1
+  orderPresentationDuration: 0.6
 --- !u!1 &192910760
 GameObject:
   m_ObjectHideFlags: 0

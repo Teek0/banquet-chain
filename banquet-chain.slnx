@@ -1,5 +1,8 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="BanquetChain.Recipes.csproj" />
   <Project Path="BanquetChain.Typing.Tests.csproj" />
+  <Project Path="BanquetChain.Recipes.Tests.csproj" />
   <Project Path="BanquetChain.Typing.csproj" />
+  <Project Path="BanquetChain.Recipes.PlayModeTests.csproj" />
 </Solution>

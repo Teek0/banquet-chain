@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d50170823c64cc1858249519b7ee5d3, type: 3}
+  m_Name: Recipe_PanCaliente
+  m_EditorClassIdentifier: BanquetChain.Recipes::RecipeData
+  displayName: Pan caliente
+  icon: {fileID: 0}
+  catOrder: '¡Quiero pan caliente!'
+  steps:
+  - expectedWord: pan
+    icon: {fileID: 0}
+    actorId: despensa
+    reactionType: 0
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: mantequilla
+    icon: {fileID: 0}
+    actorId: despensa
+    reactionType: 0
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: tostar
+    icon: {fileID: 0}
+    actorId: horno
+    reactionType: 2
+    durationBeforeNextStep: 0.5
+    transformsDish: 1
+  - expectedWord: servir
+    icon: {fileID: 0}
+    actorId: servicio
+    reactionType: 3
+    durationBeforeNextStep: 0.6
+    transformsDish: 0

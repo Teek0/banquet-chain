@@ -104,6 +104,13 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void HandleProgressChanged(int progress, string _)
     {
+        if (progress == 0 && typingInput != null && !typingInput.IsComplete)
+        {
+            StopFeedbackRoutine();
+            feedbackLabel.text = string.Empty;
+            SetState(">> ESCRIBE", activeColor);
+        }
+
         RefreshWord(progress);
     }
 

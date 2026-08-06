@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d50170823c64cc1858249519b7ee5d3, type: 3}
+  m_Name: Recipe_PlatoDelPueblo
+  m_EditorClassIdentifier: BanquetChain.Recipes::RecipeData
+  displayName: El Plato del Pueblo
+  icon: {fileID: 0}
+  catOrder: '¡Quiero el Plato del Pueblo!'
+  steps:
+  - expectedWord: pescado
+    icon: {fileID: 0}
+    actorId: pescaderia
+    reactionType: 0
+    durationBeforeNextStep: 0.25
+    transformsDish: 1
+  - expectedWord: limón
+    icon: {fileID: 0}
+    actorId: huerta
+    reactionType: 0
+    durationBeforeNextStep: 0.25
+    transformsDish: 1
+  - expectedWord: verduras
+    icon: {fileID: 0}
+    actorId: huerta
+    reactionType: 0
+    durationBeforeNextStep: 0.25
+    transformsDish: 1
+  - expectedWord: cortar
+    icon: {fileID: 0}
+    actorId: mesa_corte
+    reactionType: 1
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: condimentar
+    icon: {fileID: 0}
+    actorId: especias
+    reactionType: 1
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: cocinar
+    icon: {fileID: 0}
+    actorId: fogon
+    reactionType: 2
+    durationBeforeNextStep: 0.4
+    transformsDish: 1
+  - expectedWord: masa
+    icon: {fileID: 0}
+    actorId: panaderia
+    reactionType: 0
+    durationBeforeNextStep: 0.25
+    transformsDish: 1
+  - expectedWord: frutas
+    icon: {fileID: 0}
+    actorId: huerta
+    reactionType: 0
+    durationBeforeNextStep: 0.25
+    transformsDish: 1
+  - expectedWord: mezclar
+    icon: {fileID: 0}
+    actorId: mesa_mezcla
+    reactionType: 1
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: hornear
+    icon: {fileID: 0}
+    actorId: horno
+    reactionType: 2
+    durationBeforeNextStep: 0.45
+    transformsDish: 1
+  - expectedWord: decorar
+    icon: {fileID: 0}
+    actorId: pasteleria
+    reactionType: 1
+    durationBeforeNextStep: 0.35
+    transformsDish: 1
+  - expectedWord: compartir
+    icon: {fileID: 0}
+    actorId: pueblo
+    reactionType: 1
+    durationBeforeNextStep: 0.5
+    transformsDish: 1
+  - expectedWord: servir
+    icon: {fileID: 0}
+    actorId: servicio
+    reactionType: 3
+    durationBeforeNextStep: 0.7
+    transformsDish: 0
