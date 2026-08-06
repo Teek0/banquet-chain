@@ -5554,6 +5554,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6970251007842024563, guid: f89fd4f1b094f0144acc9dd67618c520, type: 3}
+      propertyPath: typingInput
+      value: 
+      objectReference: {fileID: 162214345}
     - target: {fileID: 7041801486716201981, guid: f89fd4f1b094f0144acc9dd67618c520, type: 3}
       propertyPath: m_IsActive
       value: 0

@@ -10,7 +10,7 @@ es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 15 del backlog. Ya existe una
+Están terminados los bloques 01 a 05 y 07 a 16 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -40,10 +40,12 @@ partida completa provisional dentro del Editor:
 - Pan caliente incluye un tutorial contextual que explica la palabra activa,
   letras correctas, error, Backspace y la reacción de la cocina; se oculta al
   terminar y vuelve a aparecer al reiniciar.
-- Hay 31/31 pruebas Edit Mode y 21/21 pruebas Play Mode aprobadas.
+- La pausa suspende la mecanografía conservando el progreso, la restaura al
+  continuar y muestra una indicación para recuperar el foco en WebGL.
+- Hay 34/34 pruebas Edit Mode y 21/21 pruebas Play Mode aprobadas.
 
 El juego todavía usa presentación visual provisional. El siguiente bloque es
-la tarea 16: cerrar el contrato entre pausa, mecanografía y reinicio.
+la tarea 17: integrar feedback sonoro y ambiente.
 
 ## Flujo de escenas
 
@@ -115,7 +117,7 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 31 pruebas de escritura, datos y HUD.
+- `Assets/_Project/Tests/EditMode/`: 34 pruebas de escritura, datos y HUD.
 - `Assets/_Project/Tests/PlayMode/`: 21 pruebas del ciclo, actores, plato, gato
   y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
@@ -144,7 +146,7 @@ composición actual de `Playground`.
    del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
-11. En `Window → General → Test Runner`, ejecuta las 31 pruebas de `EditMode` y
+11. En `Window → General → Test Runner`, ejecuta las 34 pruebas de `EditMode` y
     las 21 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.

@@ -8,6 +8,7 @@ public sealed class TypingInput : MonoBehaviour
     private string normalizedWord = string.Empty;
     private int progress;
     private bool completionReported;
+    private bool resumeInputAfterSuspension;
     private Keyboard keyboard;
 
     public event Action<char, int> CorrectCharacterEntered;
@@ -18,6 +19,7 @@ public sealed class TypingInput : MonoBehaviour
     public string ExpectedWord => expectedWord;
     public int Progress => progress;
     public bool IsInputEnabled { get; private set; }
+    public bool IsSuspended { get; private set; }
     public bool IsComplete => normalizedWord.Length > 0
         && progress >= normalizedWord.Length;
 
@@ -66,13 +68,38 @@ public sealed class TypingInput : MonoBehaviour
         normalizedWord = candidate;
         progress = 0;
         completionReported = false;
-        IsInputEnabled = enableInput;
+        resumeInputAfterSuspension = enableInput;
+        IsInputEnabled = enableInput && !IsSuspended;
         ProgressChanged?.Invoke(progress, GetTypedPrefix());
     }
 
     public void SetInputEnabled(bool enabled)
     {
-        IsInputEnabled = enabled && !IsComplete;
+        resumeInputAfterSuspension = enabled && !IsComplete;
+        IsInputEnabled = resumeInputAfterSuspension && !IsSuspended;
+    }
+
+    public void SuspendInput()
+    {
+        if (IsSuspended)
+        {
+            return;
+        }
+
+        resumeInputAfterSuspension = IsInputEnabled && !IsComplete;
+        IsSuspended = true;
+        IsInputEnabled = false;
+    }
+
+    public void ResumeInput()
+    {
+        if (!IsSuspended)
+        {
+            return;
+        }
+
+        IsSuspended = false;
+        IsInputEnabled = resumeInputAfterSuspension && !IsComplete;
     }
 
     public void ProcessCharacter(char character)
@@ -108,6 +135,7 @@ public sealed class TypingInput : MonoBehaviour
         }
 
         completionReported = true;
+        resumeInputAfterSuspension = false;
         IsInputEnabled = false;
         WordCompleted?.Invoke(expectedWord);
     }

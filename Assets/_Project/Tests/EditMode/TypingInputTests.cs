@@ -115,4 +115,45 @@ public sealed class TypingInputTests
 
         Assert.That(typingInput.Progress, Is.EqualTo(1));
     }
+
+    [Test]
+    public void SuspendInput_BlocksCharactersAndBackspace()
+    {
+        typingInput.SetExpectedWord("sal");
+        typingInput.ProcessCharacter('s');
+        typingInput.SuspendInput();
+
+        typingInput.ProcessCharacter('a');
+        typingInput.ProcessBackspace();
+
+        Assert.That(typingInput.IsSuspended, Is.True);
+        Assert.That(typingInput.IsInputEnabled, Is.False);
+        Assert.That(typingInput.Progress, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ResumeInput_RestoresPreviousEnabledState()
+    {
+        typingInput.SetExpectedWord("sal");
+        typingInput.SuspendInput();
+        typingInput.ResumeInput();
+        typingInput.ProcessCharacter('s');
+
+        Assert.That(typingInput.IsSuspended, Is.False);
+        Assert.That(typingInput.IsInputEnabled, Is.True);
+        Assert.That(typingInput.Progress, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void DisabledWhileSuspended_RemainsDisabledAfterResume()
+    {
+        typingInput.SetExpectedWord("sal");
+        typingInput.SuspendInput();
+        typingInput.SetInputEnabled(false);
+        typingInput.ResumeInput();
+        typingInput.ProcessCharacter('s');
+
+        Assert.That(typingInput.IsInputEnabled, Is.False);
+        Assert.That(typingInput.Progress, Is.Zero);
+    }
 }

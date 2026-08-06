@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -9,14 +10,18 @@ public sealed class PauseMenu : MonoBehaviour
     [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private string pauseActionName = "Gameplay/Pause";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private TypingInput typingInput;
 
     private InputAction pauseAction;
     private bool ownsPauseAction;
 
     public bool IsPaused { get; private set; }
+    public event Action<bool> PauseChanged;
 
     private void Awake()
     {
+        ResolveTypingInput();
+
         if (pausePanel == null)
         {
             Debug.LogError("PauseMenu no tiene PausePanel asignado.");
@@ -28,6 +33,7 @@ public sealed class PauseMenu : MonoBehaviour
 
     private void OnEnable()
     {
+        ResolveTypingInput();
         ResolvePauseAction();
     }
 
@@ -38,6 +44,11 @@ public sealed class PauseMenu : MonoBehaviour
 
     private void OnDisable()
     {
+        if (IsPaused)
+        {
+            SetPaused(false);
+        }
+
         if (ownsPauseAction && pauseAction != null)
         {
             pauseAction.Disable();
@@ -121,10 +132,20 @@ public sealed class PauseMenu : MonoBehaviour
         AppRoot.Instance.SceneLoader.LoadScene(mainMenuSceneName);
     }
 
-    private void SetPaused(bool paused)
+    public void SetPaused(bool paused)
     {
+        bool stateChanged = IsPaused != paused;
         IsPaused = paused;
         Time.timeScale = paused ? 0f : 1f;
+
+        if (paused)
+        {
+            typingInput?.SuspendInput();
+        }
+        else
+        {
+            typingInput?.ResumeInput();
+        }
 
         if (pausePanel != null)
         {
@@ -143,6 +164,19 @@ public sealed class PauseMenu : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (stateChanged)
+        {
+            PauseChanged?.Invoke(IsPaused);
+        }
+    }
+
+    private void ResolveTypingInput()
+    {
+        if (typingInput == null)
+        {
+            typingInput = FindFirstObjectByType<TypingInput>();
+        }
     }
 
     private void OnDestroy()
