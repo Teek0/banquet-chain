@@ -1,10 +1,12 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="BanquetChain.Recipes.csproj" />
+  <Project Path="BanquetChain.Flow.PlayModeTests.csproj" />
   <Project Path="BanquetChain.Typing.Tests.csproj" />
   <Project Path="BanquetChain.Presentation.csproj" />
+  <Project Path="BanquetChain.Presentation.PlayModeTests.csproj" />
+  <Project Path="BanquetChain.Flow.csproj" />
   <Project Path="BanquetChain.Recipes.Tests.csproj" />
   <Project Path="BanquetChain.Typing.csproj" />
-  <Project Path="BanquetChain.Presentation.PlayModeTests.csproj" />
   <Project Path="BanquetChain.Recipes.PlayModeTests.csproj" />
 </Solution>

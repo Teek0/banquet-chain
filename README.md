@@ -4,13 +4,14 @@ Prototipo 2D de mecanografía hecho con Unity 6 y URP 2D. El juego transcurre
 en una cocina fija: el jugador completa palabras para ejecutar acciones,
 avanzar recetas y mantener en marcha el banquete.
 
-El diseño de producto y el plan de implementación viven en `documentacion/`.
-Esa carpeta es memoria local de trabajo y no se versiona.
+El GDD vive en la carpeta externa de diseño de Takernal Jam. El plan de
+implementación y la memoria operativa viven en `documentacion/`; esa carpeta
+es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 10 del backlog. Ya existe el primer
-bucle jugable provisional dentro del Editor:
+Están terminados los bloques 01 a 05 y 07 a 13 del backlog. Ya existe una
+partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
 - `TypingInput` procesa una palabra activa, normaliza mayúsculas y tildes,
@@ -21,18 +22,24 @@ bucle jugable provisional dentro del Editor:
   Pueblo.
 - `RecipeRunner` recorre una receta como máquina de estados, bloquea la entrada
   mientras se ejecuta cada acción y permite reiniciar sin recargar la escena.
-- `Playground` ejecuta provisionalmente Pan caliente al entrar en Play:
-  `pan → mantequilla → tostar → servir`.
+- `GameFlow` recorre Pan caliente, Sopa de verduras y El Plato del Pueblo en
+  ese orden, sin intervención desde la consola o el Inspector.
 - El HUD superior muestra plato, pedido, estado, paso activo, pasos posteriores
   atenuados y la indicación `ESC · PAUSA` sin consultar datos cada frame.
 - `Despensa`, `Horno` y `Servicio` se resaltan según el paso activo, anticipan
   con el progreso escrito, reaccionan al completar la palabra y celebran el
   plato terminado.
-- Hay 23/23 pruebas Edit Mode y 9/9 pruebas Play Mode aprobadas.
+- El plato central agrega capas provisionales después de los pasos que lo
+  transforman, distingue el estado listo y se desplaza al completar `servir`.
+- El gato presenta cada pedido, reacciona al recibir un plato y aumenta su
+  satisfacción hasta el ronroneo final.
+- Tras el tercer plato aparece el cierre de partida y se continúa a `Credits`
+  mediante el cargador de escenas existente.
+- Hay 23/23 pruebas Edit Mode y 17/17 pruebas Play Mode aprobadas.
 
-Todavía no hay transformación visual del plato, reacción del gato, progresión
-entre las tres recetas ni arte final. El siguiente bloque es la tarea 11:
-mostrar la transformación progresiva del plato.
+El juego todavía usa presentación provisional y marcadores explícitos donde
+faltan actores o assets definitivos. El siguiente bloque es la tarea 14:
+consolidar el contenido definitivo de las tres recetas y su reparto visual.
 
 ## Flujo de escenas
 
@@ -58,7 +65,10 @@ Presentar pedido
   → bloquear entrada durante la acción
   → avanzar al siguiente paso
   → servir
-  → receta completada
+  → reacción del gato
+  → siguiente receta (tres en total)
+  → celebración final
+  → Credits
 ```
 
 Estados de `RecipeRunner`: `PresentingOrder`, `AwaitingInput`,
@@ -94,13 +104,16 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/Gameplay/Typing/`: normalizador y entrada de texto.
 - `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
 - `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales y
-  coordinación de reacciones por eventos.
+  coordinación de actores, plato y gato por eventos.
+- `Assets/_Project/Scripts/Gameplay/Flow/`: coordinación de las tres recetas,
+  celebraciones y cierre de partida.
 - `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
 - `Assets/_Project/Tests/EditMode/`: 23 pruebas de escritura, datos y HUD.
-- `Assets/_Project/Tests/PlayMode/`: 9 pruebas del ciclo real y los actores.
+- `Assets/_Project/Tests/PlayMode/`: 17 pruebas del ciclo, actores, plato, gato
+  y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
 Los scripts y prefabs heredados de plataformas se conservan como referencia,
@@ -111,7 +124,8 @@ composición actual de `Playground`.
 
 1. Abre el proyecto con Unity `6000.3.19f1`.
 2. Abre `Assets/_Project/Scenes/Playground.unity` y pulsa Play.
-3. Escribe, en orden: `pan`, `mantequilla`, `tostar` y `servir`.
+3. Completa las tres recetas en orden: Pan caliente (4 palabras), Sopa de
+   verduras (7 palabras) y El Plato del Pueblo (13 palabras).
 4. Comprueba que una letra incorrecta no avance y que Backspace retroceda.
 5. Entre palabras, comprueba que la entrada quede bloqueada durante la espera
    configurada y luego aparezca el siguiente paso.
@@ -120,11 +134,16 @@ composición actual de `Playground`.
 7. Comprueba que `pan` y `mantequilla` señalen `Despensa`, `tostar` señale
    `Horno` y `servir` señale `Servicio`; cada mesa debe anticipar al escribir y
    rebotar al completar su palabra.
-8. Al terminar `servir`, confirma que las tres mesas celebren, que el HUD
-   muestre `RECETA COMPLETADA` y que no se acepte más texto.
-9. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
-   las 9 pruebas de `PlayMode`.
-10. Opcionalmente, inicia desde `Boot` y comprueba `MainMenu → Playground`.
+8. Comprueba que el plato cambie con `pan`, `mantequilla` y `tostar`; al
+   completar `servir` debe mostrar `ENTREGANDO...` y desplazarse a la derecha.
+9. Tras cada `servir`, confirma la reacción del gato y el comienzo automático
+   del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
+10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
+    transición automática a `Credits`.
+11. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
+    las 17 pruebas de `PlayMode`.
+12. Opcionalmente, inicia desde `Boot` y recorre
+    `MainMenu → Playground → Credits → MainMenu`.
 
 La compilación WebGL está pospuesta. No se generará un build hasta que exista
 un juego completo y representativo dentro del Editor.
@@ -134,5 +153,7 @@ un juego completo y representativo dentro del Editor.
 - Assets propios dentro de `Assets/_Project`.
 - No se agregan escenas, paquetes o singletons sin una necesidad del backlog.
 - Los cambios de escena y prefab deben preservar referencias serializadas.
-- `documentacion/` contiene el backlog, GDD copiado y memoria privada del
-  proyecto; no reemplaza este README público.
+- Los elementos visuales actuales son placeholders reemplazables por los assets
+  definitivos sin cambiar la lógica de receta.
+- `documentacion/` contiene el backlog, el prompt de trabajo y memoria privada
+  del proyecto; el GDD permanece en la carpeta externa de diseño.
