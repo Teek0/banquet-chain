@@ -39,6 +39,14 @@ public sealed class SceneLoader : MonoBehaviour
         LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void RevealCurrentScene()
+    {
+        if (screenFader != null)
+        {
+            StartCoroutine(screenFader.FadeTo(0f, fadeDuration));
+        }
+    }
+
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
         IsLoading = true;

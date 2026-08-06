@@ -6,11 +6,12 @@ public sealed class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject firstSelected;
-    [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private string pauseActionName = "Gameplay/Pause";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
 
     private InputAction pauseAction;
+    private bool ownsPauseAction;
 
     public bool IsPaused { get; private set; }
 
@@ -25,15 +26,35 @@ public sealed class PauseMenu : MonoBehaviour
         pausePanel.SetActive(false);
     }
 
-    private void Start()
+    private void OnEnable()
     {
         ResolvePauseAction();
+    }
+
+    private void Start()
+    {
         SetPaused(false);
+    }
+
+    private void OnDisable()
+    {
+        if (ownsPauseAction && pauseAction != null)
+        {
+            pauseAction.Disable();
+        }
+
+        ownsPauseAction = false;
+        pauseAction = null;
     }
 
     private void Update()
     {
-        if (pauseAction != null && pauseAction.WasPressedThisFrame())
+        bool pausePressed = pauseAction != null
+            && pauseAction.WasPressedThisFrame();
+        bool keyboardPausePressed = Keyboard.current != null
+            && Keyboard.current.escapeKey.wasPressedThisFrame;
+
+        if (pausePressed || keyboardPausePressed)
         {
             SetPaused(!IsPaused);
         }
@@ -41,18 +62,13 @@ public sealed class PauseMenu : MonoBehaviour
 
     private void ResolvePauseAction()
     {
-        if (playerInput == null)
+        if (inputActions == null)
         {
-            playerInput = FindFirstObjectByType<PlayerInput>();
-        }
-
-        if (playerInput == null || playerInput.actions == null)
-        {
-            Debug.LogError("PauseMenu necesita un PlayerInput en la escena.");
+            Debug.LogError("PauseMenu necesita un InputActionAsset asignado.");
             return;
         }
 
-        pauseAction = playerInput.actions.FindAction(
+        pauseAction = inputActions.FindAction(
             pauseActionName,
             false
         );
@@ -62,6 +78,13 @@ public sealed class PauseMenu : MonoBehaviour
             Debug.LogError(
                 $"PauseMenu no encontró la acción '{pauseActionName}'."
             );
+            return;
+        }
+
+        if (!pauseAction.enabled)
+        {
+            pauseAction.Enable();
+            ownsPauseAction = true;
         }
     }
 

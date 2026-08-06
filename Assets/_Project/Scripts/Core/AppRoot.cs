@@ -49,15 +49,18 @@ public sealed class AppRoot : MonoBehaviour
             return;
         }
 
+        if (sceneLoader == null)
+        {
+            Debug.LogError("AppRoot no tiene SceneLoader asignado.");
+            return;
+        }
+
         if (SceneManager.GetActiveScene().name == bootSceneName)
         {
-            if (sceneLoader == null)
-            {
-                Debug.LogError("AppRoot no tiene SceneLoader asignado.");
-                return;
-            }
-
             sceneLoader.LoadScene(firstSceneName);
+            return;
         }
+
+        sceneLoader.RevealCurrentScene();
     }
 }
