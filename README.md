@@ -9,7 +9,7 @@ Esa carpeta es memoria local de trabajo y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05, 07 y 08 del backlog. Ya existe el primer
+Están terminados los bloques 01 a 05 y 07 a 09 del backlog. Ya existe el primer
 bucle jugable provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -23,11 +23,13 @@ bucle jugable provisional dentro del Editor:
   mientras se ejecuta cada acción y permite reiniciar sin recargar la escena.
 - `Playground` ejecuta provisionalmente Pan caliente al entrar en Play:
   `pan → mantequilla → tostar → servir`.
-- Hay 20/20 pruebas Edit Mode y 4/4 pruebas Play Mode aprobadas.
+- El HUD superior muestra plato, pedido, estado, paso activo, pasos posteriores
+  atenuados y la indicación `ESC · PAUSA` sin consultar datos cada frame.
+- Hay 23/23 pruebas Edit Mode y 4/4 pruebas Play Mode aprobadas.
 
 Todavía no hay actores de cocina, reacción del gato, progresión entre las tres
-recetas ni arte final. El siguiente bloque es la tarea 09: mostrar el pedido y
-el progreso completo de la receta en el HUD.
+recetas ni arte final. El siguiente bloque es la tarea 10: conectar actores de
+cocina y reacciones provisionales.
 
 ## Flujo de escenas
 
@@ -90,7 +92,9 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
 - `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
-- `Assets/_Project/Tests/EditMode/`: 20 pruebas de escritura y datos.
+- `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
+  eventos del corredor.
+- `Assets/_Project/Tests/EditMode/`: 23 pruebas de escritura, datos y HUD.
 - `Assets/_Project/Tests/PlayMode/`: 4 pruebas del ciclo real de receta.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
@@ -106,10 +110,13 @@ composición actual de `Playground`.
 4. Comprueba que una letra incorrecta no avance y que Backspace retroceda.
 5. Entre palabras, comprueba que la entrada quede bloqueada durante la espera
    configurada y luego aparezca el siguiente paso.
-6. Al terminar `servir`, confirma que no se acepte más texto.
-7. En `Window → General → Test Runner`, ejecuta las 20 pruebas de `EditMode` y
+6. Comprueba que el HUD marque el paso activo, atenúe los posteriores y muestre
+   los completados con una marca.
+7. Al terminar `servir`, confirma que el HUD muestre `RECETA COMPLETADA` y que
+   no se acepte más texto.
+8. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
    las 4 pruebas de `PlayMode`.
-8. Opcionalmente, inicia desde `Boot` y comprueba `MainMenu → Playground`.
+9. Opcionalmente, inicia desde `Boot` y comprueba `MainMenu → Playground`.
 
 La compilación WebGL está pospuesta. No se generará un build hasta que exista
 un juego completo y representativo dentro del Editor.
