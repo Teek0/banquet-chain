@@ -11,9 +11,6 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
     private readonly Dictionary<string, KitchenActor> actorsById = new(
         StringComparer.OrdinalIgnoreCase
     );
-    private readonly HashSet<string> provisionalActorIdsReported = new(
-        StringComparer.OrdinalIgnoreCase
-    );
     private KitchenActor activeActor;
     private bool isSubscribed;
 
@@ -45,7 +42,6 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
     public void RebuildActorIndex()
     {
         actorsById.Clear();
-        provisionalActorIdsReported.Clear();
 
         if (actors == null || actors.Count == 0)
         {
@@ -144,6 +140,18 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
 
     private void HandleStepCompleted(RecipeStep step, int index)
     {
+        if (step?.ReactionType == KitchenReactionType.Collaboration)
+        {
+            activeActor = null;
+
+            foreach (KitchenActor actor in actors)
+            {
+                actor?.PlayCelebration();
+            }
+
+            return;
+        }
+
         if (activeActor == null)
         {
             SelectActor(step, index);
@@ -185,7 +193,7 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
         }
     }
 
-    private void SelectActor(RecipeStep step, int fallbackIndex)
+    private void SelectActor(RecipeStep step, int _)
     {
         foreach (KitchenActor actor in actors)
         {
@@ -201,43 +209,8 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
 
         string requestedActorId = step.ActorId.Trim();
 
-        if (!actorsById.TryGetValue(requestedActorId, out activeActor))
-        {
-            activeActor = GetProvisionalActor(fallbackIndex);
-
-            if (activeActor != null
-                && provisionalActorIdsReported.Add(requestedActorId))
-            {
-                Debug.Log(
-                    $"Actor provisional '{activeActor.ActorId}' usado para "
-                        + $"'{requestedActorId}' hasta integrar el asset definitivo.",
-                    this
-                );
-            }
-        }
+        actorsById.TryGetValue(requestedActorId, out activeActor);
 
         activeActor?.SetTargeted(true);
-    }
-
-    private KitchenActor GetProvisionalActor(int fallbackIndex)
-    {
-        if (actors == null || actors.Count == 0)
-        {
-            return null;
-        }
-
-        int startIndex = Mathf.Abs(fallbackIndex) % actors.Count;
-
-        for (int offset = 0; offset < actors.Count; offset++)
-        {
-            KitchenActor candidate = actors[(startIndex + offset) % actors.Count];
-
-            if (candidate != null)
-            {
-                return candidate;
-            }
-        }
-
-        return null;
     }
 }

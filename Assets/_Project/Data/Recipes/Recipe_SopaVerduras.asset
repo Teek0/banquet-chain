@@ -18,37 +18,37 @@ MonoBehaviour:
   steps:
   - expectedWord: tomate
     icon: {fileID: 0}
-    actorId: huerta
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: zanahoria
     icon: {fileID: 0}
-    actorId: huerta
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: cortar
     icon: {fileID: 0}
-    actorId: mesa_corte
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.45
     transformsDish: 1
   - expectedWord: agua
     icon: {fileID: 0}
-    actorId: olla
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: hervir
     icon: {fileID: 0}
-    actorId: fogon
+    actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.5
     transformsDish: 1
   - expectedWord: mezclar
     icon: {fileID: 0}
-    actorId: olla
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.45
     transformsDish: 1

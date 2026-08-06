@@ -295,6 +295,7 @@ public sealed class KitchenActor : MonoBehaviour
             KitchenReactionType.Preparation => -7f,
             KitchenReactionType.Cooking => 8f,
             KitchenReactionType.Serving => -5f,
+            KitchenReactionType.Collaboration => 10f,
             _ => 5f
         };
     }

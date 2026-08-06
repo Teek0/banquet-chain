@@ -152,6 +152,56 @@ public sealed class KitchenActorTests
         Assert.That(service.State, Is.EqualTo(KitchenActorVisualState.Celebrating));
     }
 
+    [UnityTest]
+    public IEnumerator CollaborationStepCelebratesEveryActor()
+    {
+        GameObject runnerObject = new("Runner");
+        GameObject actorRoot = new("Actors");
+        objectsToDestroy.Add(runnerObject);
+        objectsToDestroy.Add(actorRoot);
+        runnerObject.SetActive(false);
+        actorRoot.SetActive(false);
+
+        TypingInput typingInput = runnerObject.AddComponent<TypingInput>();
+        RecipeRunner runner = runnerObject.AddComponent<RecipeRunner>();
+        SerializedObject serializedRunner = new(runner);
+        serializedRunner.FindProperty("typingInput").objectReferenceValue
+            = typingInput;
+        serializedRunner.FindProperty("playOnStart").boolValue = false;
+        serializedRunner.FindProperty("orderPresentationDuration").floatValue
+            = 0f;
+        serializedRunner.ApplyModifiedPropertiesWithoutUndo();
+
+        KitchenActor pantry = CreateActor(actorRoot.transform, "despensa");
+        KitchenActor oven = CreateActor(actorRoot.transform, "horno");
+        KitchenActor service = CreateActor(actorRoot.transform, "servicio");
+        KitchenActorCoordinator coordinator = actorRoot.AddComponent<KitchenActorCoordinator>();
+        SerializedObject serializedCoordinator = new(coordinator);
+        serializedCoordinator.FindProperty("recipeRunner").objectReferenceValue
+            = runner;
+        serializedCoordinator.FindProperty("typingInput").objectReferenceValue
+            = typingInput;
+        SerializedProperty actors = serializedCoordinator.FindProperty("actors");
+        actors.arraySize = 3;
+        actors.GetArrayElementAtIndex(0).objectReferenceValue = pantry;
+        actors.GetArrayElementAtIndex(1).objectReferenceValue = oven;
+        actors.GetArrayElementAtIndex(2).objectReferenceValue = service;
+        serializedCoordinator.ApplyModifiedPropertiesWithoutUndo();
+
+        RecipeData recipe = CreateCollaborationRecipe();
+        runnerObject.SetActive(true);
+        actorRoot.SetActive(true);
+        Assert.That(runner.StartRecipe(recipe), Is.True);
+        yield return WaitForState(runner, RecipeRunnerState.AwaitingInput);
+
+        CompleteCurrentWord(typingInput);
+        yield return null;
+
+        Assert.That(pantry.State, Is.EqualTo(KitchenActorVisualState.Celebrating));
+        Assert.That(oven.State, Is.EqualTo(KitchenActorVisualState.Celebrating));
+        Assert.That(service.State, Is.EqualTo(KitchenActorVisualState.Celebrating));
+    }
+
     private KitchenActor CreateActor(Transform parent, string id)
     {
         GameObject actorGameObject = new(id);
@@ -185,6 +235,35 @@ public sealed class KitchenActorTests
             step.FindPropertyRelative("durationBeforeNextStep").floatValue = 0f;
         }
 
+        serializedRecipe.ApplyModifiedPropertiesWithoutUndo();
+        return recipe;
+    }
+
+    private RecipeData CreateCollaborationRecipe()
+    {
+        RecipeData recipe = ScriptableObject.CreateInstance<RecipeData>();
+        objectsToDestroy.Add(recipe);
+        SerializedObject serializedRecipe = new(recipe);
+        serializedRecipe.FindProperty("displayName").stringValue = "Final";
+        serializedRecipe.FindProperty("catOrder").stringValue = "Pedido";
+        SerializedProperty steps = serializedRecipe.FindProperty("steps");
+        steps.arraySize = 2;
+
+        SerializedProperty collaboration = steps.GetArrayElementAtIndex(0);
+        collaboration.FindPropertyRelative("expectedWord").stringValue
+            = "compartir";
+        collaboration.FindPropertyRelative("actorId").stringValue = "servicio";
+        collaboration.FindPropertyRelative("reactionType").enumValueIndex
+            = (int)KitchenReactionType.Collaboration;
+        collaboration.FindPropertyRelative("durationBeforeNextStep").floatValue
+            = 0f;
+
+        SerializedProperty serving = steps.GetArrayElementAtIndex(1);
+        serving.FindPropertyRelative("expectedWord").stringValue = "servir";
+        serving.FindPropertyRelative("actorId").stringValue = "servicio";
+        serving.FindPropertyRelative("reactionType").enumValueIndex
+            = (int)KitchenReactionType.Serving;
+        serving.FindPropertyRelative("durationBeforeNextStep").floatValue = 0f;
         serializedRecipe.ApplyModifiedPropertiesWithoutUndo();
         return recipe;
     }

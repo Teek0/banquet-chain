@@ -10,7 +10,7 @@ es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 13 del backlog. Ya existe una
+Están terminados los bloques 01 a 05 y 07 a 14 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -35,11 +35,12 @@ partida completa provisional dentro del Editor:
   satisfacción hasta el ronroneo final.
 - Tras el tercer plato aparece el cierre de partida y se continúa a `Credits`
   mediante el cargador de escenas existente.
-- Hay 23/23 pruebas Edit Mode y 17/17 pruebas Play Mode aprobadas.
+- Las recetas largas usan explícitamente `Despensa`, `Horno` y `Servicio`; la
+  palabra `compartir` hace reaccionar a toda la cocina antes de la entrega.
+- Hay 31/31 pruebas Edit Mode y 18/18 pruebas Play Mode aprobadas.
 
-El juego todavía usa presentación provisional y marcadores explícitos donde
-faltan actores o assets definitivos. El siguiente bloque es la tarea 14:
-consolidar el contenido definitivo de las tres recetas y su reparto visual.
+El juego todavía usa presentación visual provisional. El siguiente bloque es
+la tarea 15: enseñar la mecanografía de forma contextual durante Pan caliente.
 
 ## Flujo de escenas
 
@@ -111,8 +112,8 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 23 pruebas de escritura, datos y HUD.
-- `Assets/_Project/Tests/PlayMode/`: 17 pruebas del ciclo, actores, plato, gato
+- `Assets/_Project/Tests/EditMode/`: 31 pruebas de escritura, datos y HUD.
+- `Assets/_Project/Tests/PlayMode/`: 18 pruebas del ciclo, actores, plato, gato
   y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
 
@@ -140,8 +141,8 @@ composición actual de `Playground`.
    del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
-11. En `Window → General → Test Runner`, ejecuta las 23 pruebas de `EditMode` y
-    las 17 pruebas de `PlayMode`.
+11. En `Window → General → Test Runner`, ejecuta las 31 pruebas de `EditMode` y
+    las 18 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.
 

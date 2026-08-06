@@ -18,55 +18,55 @@ MonoBehaviour:
   steps:
   - expectedWord: pescado
     icon: {fileID: 0}
-    actorId: pescaderia
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: limón
     icon: {fileID: 0}
-    actorId: huerta
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: verduras
     icon: {fileID: 0}
-    actorId: huerta
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: cortar
     icon: {fileID: 0}
-    actorId: mesa_corte
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: condimentar
     icon: {fileID: 0}
-    actorId: especias
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: cocinar
     icon: {fileID: 0}
-    actorId: fogon
+    actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.4
     transformsDish: 1
   - expectedWord: masa
     icon: {fileID: 0}
-    actorId: panaderia
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: frutas
     icon: {fileID: 0}
-    actorId: huerta
+    actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: mezclar
     icon: {fileID: 0}
-    actorId: mesa_mezcla
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
@@ -78,14 +78,14 @@ MonoBehaviour:
     transformsDish: 1
   - expectedWord: decorar
     icon: {fileID: 0}
-    actorId: pasteleria
+    actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: compartir
     icon: {fileID: 0}
-    actorId: pueblo
-    reactionType: 1
+    actorId: servicio
+    reactionType: 4
     durationBeforeNextStep: 0.5
     transformsDish: 1
   - expectedWord: servir

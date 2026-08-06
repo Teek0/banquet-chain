@@ -6,7 +6,8 @@ public enum KitchenReactionType
     Ingredient,
     Preparation,
     Cooking,
-    Serving
+    Serving,
+    Collaboration
 }
 
 [Serializable]
