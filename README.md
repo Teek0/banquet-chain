@@ -10,7 +10,7 @@ es local y no se versiona.
 
 ## Estado actual
 
-Están terminados los bloques 01 a 05 y 07 a 17 del backlog. Ya existe una
+Están terminados los bloques 01 a 05 y 07 a 18 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
@@ -44,10 +44,12 @@ partida completa provisional dentro del Editor:
   continuar y muestra una indicación para recuperar el foco en WebGL.
 - `GameplayAudio` distingue acierto, error, palabra, acción, plato, reacción
   del gato y ronroneo; usa `Music`/`SFX` del mixer y fallbacks sustituibles.
-- Hay 34/34 pruebas Edit Mode y 23/23 pruebas Play Mode aprobadas.
+- El menú explica la premisa y controles; el final comunica la contribución de
+  todo el pueblo y `Credits` contiene campos editables de autoría y licencias.
+- Hay 37/37 pruebas Edit Mode y 23/23 pruebas Play Mode aprobadas.
 
 El juego todavía usa presentación visual provisional. El siguiente bloque es
-la tarea 18: completar presentación, final y créditos.
+la tarea 19: ajustar legibilidad, ritmo y accesibilidad básica.
 
 ## Flujo de escenas
 
@@ -119,7 +121,8 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 34 pruebas de escritura, datos y HUD.
+- `Assets/_Project/Tests/EditMode/`: 37 pruebas de escritura, datos, HUD y
+  escenas de presentación.
 - `Assets/_Project/Tests/PlayMode/`: 23 pruebas del ciclo, actores, plato, gato
   y flujo completo.
 - `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
@@ -148,7 +151,7 @@ composición actual de `Playground`.
    del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
-11. En `Window → General → Test Runner`, ejecuta las 34 pruebas de `EditMode` y
+11. En `Window → General → Test Runner`, ejecuta las 37 pruebas de `EditMode` y
     las 23 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.

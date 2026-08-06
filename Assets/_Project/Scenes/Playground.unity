@@ -1321,11 +1321,13 @@ MonoBehaviour:
   playOnStart: 1
   dishCelebrationDuration: 1.2
   interRecipeDelay: 0.45
-  finalCelebrationDuration: 3
+  finalCelebrationDuration: 6.5
   finalOverlay: {fileID: 2141736486}
   finalLabel: {fileID: 581944449}
   loadCreditsOnComplete: 1
-  finalMessage: "EL BANQUETE EST\xC1 COMPLETO\nEl ronroneo vuelve a proteger al pueblo."
+  finalMessage: "EL BANQUETE EST\xC1 COMPLETO\n\nTODO EL PUEBLO COCIN\xD3 COMO UNO.\nEL
+    RONRONEO VUELVE A PROTEGER HOGARES Y CULTIVOS.\n\nPARA ALIMENTAR A UN GATO GIGANTESCO\nHACE
+    FALTA TODO UN PUEBLO."
 --- !u!1 &435188895
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,8 +1960,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
