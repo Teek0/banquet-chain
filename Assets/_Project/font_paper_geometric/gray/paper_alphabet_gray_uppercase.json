@@ -1,0 +1,174 @@
+{
+  "name": "Paper Geometric Festival Uppercase Gray",
+  "variant": "gray",
+  "texture_source": "paper_texture_red_gray_reference.png",
+  "characters": "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+  "cell_width": 224,
+  "cell_height": 320,
+  "columns": 9,
+  "rows": 3,
+  "glyphs": [
+    {
+      "glyph": "A",
+      "file": "letters/letter_A.png",
+      "row": 0,
+      "column": 0
+    },
+    {
+      "glyph": "B",
+      "file": "letters/letter_B.png",
+      "row": 0,
+      "column": 1
+    },
+    {
+      "glyph": "C",
+      "file": "letters/letter_C.png",
+      "row": 0,
+      "column": 2
+    },
+    {
+      "glyph": "D",
+      "file": "letters/letter_D.png",
+      "row": 0,
+      "column": 3
+    },
+    {
+      "glyph": "E",
+      "file": "letters/letter_E.png",
+      "row": 0,
+      "column": 4
+    },
+    {
+      "glyph": "F",
+      "file": "letters/letter_F.png",
+      "row": 0,
+      "column": 5
+    },
+    {
+      "glyph": "G",
+      "file": "letters/letter_G.png",
+      "row": 0,
+      "column": 6
+    },
+    {
+      "glyph": "H",
+      "file": "letters/letter_H.png",
+      "row": 0,
+      "column": 7
+    },
+    {
+      "glyph": "I",
+      "file": "letters/letter_I.png",
+      "row": 0,
+      "column": 8
+    },
+    {
+      "glyph": "J",
+      "file": "letters/letter_J.png",
+      "row": 1,
+      "column": 0
+    },
+    {
+      "glyph": "K",
+      "file": "letters/letter_K.png",
+      "row": 1,
+      "column": 1
+    },
+    {
+      "glyph": "L",
+      "file": "letters/letter_L.png",
+      "row": 1,
+      "column": 2
+    },
+    {
+      "glyph": "M",
+      "file": "letters/letter_M.png",
+      "row": 1,
+      "column": 3
+    },
+    {
+      "glyph": "N",
+      "file": "letters/letter_N.png",
+      "row": 1,
+      "column": 4
+    },
+    {
+      "glyph": "Ñ",
+      "file": "letters/letter_ENYE.png",
+      "row": 1,
+      "column": 5
+    },
+    {
+      "glyph": "O",
+      "file": "letters/letter_O.png",
+      "row": 1,
+      "column": 6
+    },
+    {
+      "glyph": "P",
+      "file": "letters/letter_P.png",
+      "row": 1,
+      "column": 7
+    },
+    {
+      "glyph": "Q",
+      "file": "letters/letter_Q.png",
+      "row": 1,
+      "column": 8
+    },
+    {
+      "glyph": "R",
+      "file": "letters/letter_R.png",
+      "row": 2,
+      "column": 0
+    },
+    {
+      "glyph": "S",
+      "file": "letters/letter_S.png",
+      "row": 2,
+      "column": 1
+    },
+    {
+      "glyph": "T",
+      "file": "letters/letter_T.png",
+      "row": 2,
+      "column": 2
+    },
+    {
+      "glyph": "U",
+      "file": "letters/letter_U.png",
+      "row": 2,
+      "column": 3
+    },
+    {
+      "glyph": "V",
+      "file": "letters/letter_V.png",
+      "row": 2,
+      "column": 4
+    },
+    {
+      "glyph": "W",
+      "file": "letters/letter_W.png",
+      "row": 2,
+      "column": 5
+    },
+    {
+      "glyph": "X",
+      "file": "letters/letter_X.png",
+      "row": 2,
+      "column": 6
+    },
+    {
+      "glyph": "Y",
+      "file": "letters/letter_Y.png",
+      "row": 2,
+      "column": 7
+    },
+    {
+      "glyph": "Z",
+      "file": "letters/letter_Z.png",
+      "row": 2,
+      "column": 8
+    }
+  ]
+}

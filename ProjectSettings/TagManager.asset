@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Ground
-  - 
+  - Background
+  - BigCat
   - 
   - 
   - 
@@ -41,8 +41,11 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Ground
+  - name: Background
     uniqueID: 869572583
+    locked: 0
+  - name: BigCat
+    uniqueID: 4062807815
     locked: 0
   m_RenderingLayers:
   - Default
