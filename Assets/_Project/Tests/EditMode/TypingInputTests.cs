@@ -42,7 +42,7 @@ public sealed class TypingInputTests
     }
 
     [Test]
-    public void ProcessCharacter_WrongLetterDoesNotAdvance()
+    public void ProcessCharacter_WrongLetterRemainsInTypedBuffer()
     {
         int mistakes = 0;
         typingInput.IncorrectCharacterEntered += (_, _) => mistakes++;
@@ -51,20 +51,31 @@ public sealed class TypingInputTests
         typingInput.ProcessCharacter('x');
 
         Assert.That(typingInput.Progress, Is.Zero);
+        Assert.That(typingInput.TypedText, Is.EqualTo("x"));
+        Assert.That(typingInput.TypedLength, Is.EqualTo(1));
+        Assert.That(typingInput.HasError, Is.True);
         Assert.That(mistakes, Is.EqualTo(1));
     }
 
     [Test]
-    public void WrongLetter_AllowsImmediateRecovery()
+    public void WrongLetter_RequiresBackspaceBeforeRecovery()
     {
         typingInput.SetExpectedWord("sal");
         typingInput.ProcessCharacter('x');
+        typingInput.ProcessCharacter('s');
+
+        Assert.That(typingInput.TypedText, Is.EqualTo("xs"));
+        Assert.That(typingInput.Progress, Is.Zero);
+        Assert.That(typingInput.IsComplete, Is.False);
+
+        typingInput.ProcessBackspace();
+        typingInput.ProcessBackspace();
         typingInput.ProcessCharacter('s');
         typingInput.ProcessCharacter('a');
         typingInput.ProcessCharacter('l');
 
         Assert.That(typingInput.IsComplete, Is.True);
-        Assert.That(typingInput.Progress, Is.EqualTo(3));
+        Assert.That(typingInput.TypedText, Is.EqualTo("sal"));
     }
 
     [Test]
@@ -73,18 +84,44 @@ public sealed class TypingInputTests
         int correctCharacters = 0;
         int incorrectCharacters = 0;
         int progressChanges = 0;
+        string latestTypedText = string.Empty;
         typingInput.SetExpectedWord("sal");
         typingInput.CorrectCharacterEntered += (_, _) => correctCharacters++;
         typingInput.IncorrectCharacterEntered += (_, _) =>
             incorrectCharacters++;
-        typingInput.ProgressChanged += (_, _) => progressChanges++;
+        typingInput.ProgressChanged += (_, typedText) =>
+        {
+            progressChanges++;
+            latestTypedText = typedText;
+        };
 
         typingInput.ProcessCharacter('s');
         typingInput.ProcessCharacter('x');
 
         Assert.That(correctCharacters, Is.EqualTo(1));
         Assert.That(incorrectCharacters, Is.EqualTo(1));
-        Assert.That(progressChanges, Is.EqualTo(1));
+        Assert.That(progressChanges, Is.EqualTo(2));
+        Assert.That(latestTypedText, Is.EqualTo("sx"));
+    }
+
+    [Test]
+    public void ProcessBackspace_RemovesErrorsAndRestoresCorrectPrefix()
+    {
+        typingInput.SetExpectedWord("sal");
+        typingInput.ProcessCharacter('s');
+        typingInput.ProcessCharacter('x');
+        typingInput.ProcessCharacter('a');
+
+        Assert.That(typingInput.TypedText, Is.EqualTo("sxa"));
+        Assert.That(typingInput.CorrectPrefixLength, Is.EqualTo(1));
+        Assert.That(typingInput.HasError, Is.True);
+
+        typingInput.ProcessBackspace();
+        typingInput.ProcessBackspace();
+
+        Assert.That(typingInput.TypedText, Is.EqualTo("s"));
+        Assert.That(typingInput.CorrectPrefixLength, Is.EqualTo(1));
+        Assert.That(typingInput.HasError, Is.False);
     }
 
     [Test]

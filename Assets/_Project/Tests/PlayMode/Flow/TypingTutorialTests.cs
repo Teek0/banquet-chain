@@ -44,7 +44,9 @@ public sealed class TypingTutorialTests
             Is.EqualTo(TypingTutorialStage.ErrorExplained)
         );
         StringAssert.Contains("BACKSPACE", setup.Tutorial.Message);
+        Assert.That(setup.Input.TypedText, Is.EqualTo("px"));
 
+        setup.Input.ProcessBackspace();
         setup.Input.ProcessCharacter('a');
         setup.Input.ProcessCharacter('n');
         Assert.That(

@@ -6,6 +6,7 @@ public sealed class TypingInput : MonoBehaviour
 {
     private string expectedWord = string.Empty;
     private string normalizedWord = string.Empty;
+    private string typedBuffer = string.Empty;
     private int progress;
     private bool completionReported;
     private bool resumeInputAfterSuspension;
@@ -17,11 +18,15 @@ public sealed class TypingInput : MonoBehaviour
     public event Action<string> WordCompleted;
 
     public string ExpectedWord => expectedWord;
+    public string TypedText => typedBuffer;
+    public int TypedLength => typedBuffer.Length;
+    public int CorrectPrefixLength => progress;
+    public bool HasError => typedBuffer.Length > progress;
     public int Progress => progress;
     public bool IsInputEnabled { get; private set; }
     public bool IsSuspended { get; private set; }
     public bool IsComplete => normalizedWord.Length > 0
-        && progress >= normalizedWord.Length;
+        && typedBuffer == normalizedWord;
 
     private void OnEnable()
     {
@@ -66,11 +71,12 @@ public sealed class TypingInput : MonoBehaviour
 
         expectedWord = word;
         normalizedWord = candidate;
+        typedBuffer = string.Empty;
         progress = 0;
         completionReported = false;
         resumeInputAfterSuspension = enableInput;
         IsInputEnabled = enableInput && !IsSuspended;
-        ProgressChanged?.Invoke(progress, GetTypedPrefix());
+        ProgressChanged?.Invoke(progress, typedBuffer);
     }
 
     public void SetInputEnabled(bool enabled)
@@ -119,15 +125,25 @@ public sealed class TypingInput : MonoBehaviour
 
         char enteredCharacter = normalizedCharacter[0];
 
-        if (enteredCharacter != normalizedWord[progress])
+        typedBuffer += enteredCharacter;
+        RecalculateProgress();
+
+        bool isCorrectCharacter = typedBuffer.Length <= normalizedWord.Length
+            && progress == typedBuffer.Length;
+
+        if (isCorrectCharacter)
         {
-            IncorrectCharacterEntered?.Invoke(character, progress);
-            return;
+            CorrectCharacterEntered?.Invoke(character, progress);
+        }
+        else
+        {
+            IncorrectCharacterEntered?.Invoke(
+                character,
+                typedBuffer.Length - 1
+            );
         }
 
-        progress++;
-        CorrectCharacterEntered?.Invoke(character, progress);
-        ProgressChanged?.Invoke(progress, GetTypedPrefix());
+        ProgressChanged?.Invoke(progress, typedBuffer);
 
         if (!IsComplete || completionReported)
         {
@@ -142,13 +158,14 @@ public sealed class TypingInput : MonoBehaviour
 
     public void ProcessBackspace()
     {
-        if (!IsInputEnabled || progress <= 0)
+        if (!IsInputEnabled || typedBuffer.Length == 0)
         {
             return;
         }
 
-        progress--;
-        ProgressChanged?.Invoke(progress, GetTypedPrefix());
+        typedBuffer = typedBuffer.Substring(0, typedBuffer.Length - 1);
+        RecalculateProgress();
+        ProgressChanged?.Invoke(progress, typedBuffer);
     }
 
     private void HandleTextInput(char character)
@@ -156,8 +173,15 @@ public sealed class TypingInput : MonoBehaviour
         ProcessCharacter(character);
     }
 
-    private string GetTypedPrefix()
+    private void RecalculateProgress()
     {
-        return normalizedWord.Substring(0, progress);
+        int maximumPrefix = Mathf.Min(typedBuffer.Length, normalizedWord.Length);
+        progress = 0;
+
+        while (progress < maximumPrefix
+            && typedBuffer[progress] == normalizedWord[progress])
+        {
+            progress++;
+        }
     }
 }

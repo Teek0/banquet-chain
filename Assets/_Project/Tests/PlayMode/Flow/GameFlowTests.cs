@@ -98,6 +98,11 @@ public sealed class GameFlowTests
         typingInput.ProcessCharacter('x');
         Assert.That(typingInput.Progress, Is.Zero);
         typingInput.ProcessCharacter('s');
+        Assert.That(typingInput.TypedText, Is.EqualTo("xs"));
+        Assert.That(typingInput.HasError, Is.True);
+        typingInput.ProcessBackspace();
+        typingInput.ProcessBackspace();
+        typingInput.ProcessCharacter('s');
         typingInput.ProcessCharacter('e');
         typingInput.ProcessBackspace();
         Assert.That(typingInput.Progress, Is.EqualTo(1));

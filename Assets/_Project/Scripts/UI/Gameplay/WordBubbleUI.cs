@@ -89,22 +89,26 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void HandleCorrectCharacter(char _, int progress)
     {
-        SetState(">> ESCRIBE", activeColor);
+        if (typingInput != null && !typingInput.HasError)
+        {
+            SetState(">> ESCRIBE", activeColor);
+        }
+
         RefreshWord(progress);
     }
 
     private void HandleIncorrectCharacter(char _, int __)
     {
-        ShowTemporaryFeedback(
-            "! ERROR · revisa la letra",
-            errorColor,
-            errorDuration
-        );
+        ShowPersistentError();
     }
 
     private void HandleProgressChanged(int progress, string _)
     {
-        if (progress == 0 && typingInput != null && !typingInput.IsComplete)
+        if (typingInput != null && typingInput.HasError)
+        {
+            ShowPersistentError();
+        }
+        else if (typingInput != null && !typingInput.IsComplete)
         {
             StopFeedbackRoutine();
             feedbackLabel.text = string.Empty;
@@ -112,6 +116,20 @@ public sealed class WordBubbleUI : MonoBehaviour
         }
 
         RefreshWord(progress);
+    }
+
+    private void ShowPersistentError()
+    {
+        if (typingInput == null || feedbackLabel == null)
+        {
+            return;
+        }
+
+        StopFeedbackRoutine();
+        SetState("! CORRIGE", errorColor);
+        feedbackLabel.text = $"ESCRITO: {typingInput.TypedText.ToUpperInvariant()}"
+            + " · BACKSPACE PARA CORREGIR";
+        feedbackLabel.color = errorColor;
     }
 
     private void HandleWordCompleted(string _)

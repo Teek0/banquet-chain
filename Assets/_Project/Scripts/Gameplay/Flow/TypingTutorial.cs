@@ -177,7 +177,7 @@ public sealed class TypingTutorial : MonoBehaviour
 
         Show(
             TypingTutorialStage.ErrorExplained,
-            "ERROR · NO AVANZA · BACKSPACE RETROCEDE LETRAS CORRECTAS"
+            "EL ERROR QUEDA ESCRITO · USA BACKSPACE PARA CORREGIR"
         );
     }
 

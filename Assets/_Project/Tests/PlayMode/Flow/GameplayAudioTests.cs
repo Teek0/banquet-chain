@@ -48,6 +48,7 @@ public sealed class GameplayAudioTests
         setup.Input.ProcessCharacter('x');
         Assert.That(setup.Audio.LastCue, Is.EqualTo(GameplayAudioCue.Error));
 
+        setup.Input.ProcessBackspace();
         setup.Input.ProcessCharacter('a');
         setup.Input.ProcessCharacter('n');
         yield return null;

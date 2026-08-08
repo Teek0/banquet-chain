@@ -46,12 +46,15 @@ partida completa provisional dentro del Editor:
   del gato y ronroneo; usa `Music`/`SFX` del mixer y fallbacks sustituibles.
 - El menú explica la premisa y controles; el final comunica la contribución de
   todo el pueblo y `Credits` contiene campos editables de autoría y licencias.
-- Las tres escenas usan referencia 960 × 600; la palabra activa se autoajusta,
-  los estados no dependen solo del color y las reacciones evitan movimiento
-  excesivo.
+- `Playground` y `Credits` usan referencia 960 × 600; `MainMenu` tiene una
+  edición paralela a 1960 × 1080 pendiente de confirmar. La palabra activa se
+  autoajusta, los estados no dependen solo del color y las reacciones evitan
+  movimiento excesivo.
 - La pasada integral cubre errores, Backspace, teclas ignoradas, pausa,
   reinicios intermedios, tres recetas, final y referencias críticas.
-- Hay 47/47 pruebas Edit Mode y 24/24 pruebas Play Mode aprobadas.
+- El búfer de escritura pasa 15/15 pruebas específicas y Play Mode pasa 24/24.
+- La batería Edit Mode queda en 47/48: solo falla la comprobación de 960 × 600
+  de `MainMenu` por la edición paralela indicada arriba.
 
 No hay defectos bloqueantes confirmados dentro del Editor. El siguiente y
 último bloque es T21, la build candidata; queda sin ejecutar hasta recibir una
@@ -96,8 +99,10 @@ Estados de `RecipeRunner`: `PresentingOrder`, `AwaitingInput`,
 - Mayúsculas y minúsculas son equivalentes.
 - Las vocales con o sin tilde son equivalentes.
 - `ü` y `u` son equivalentes.
-- Una letra incorrecta no avanza.
-- Backspace retrocede sin producir índices negativos.
+- Cada letra alfabética queda escrita, incluso si es incorrecta.
+- Se puede seguir escribiendo después de un error, pero la palabra solo se
+  completa cuando todo el texto coincide exactamente.
+- Backspace elimina letras del texto y es necesario para corregir errores.
 - No hace falta pulsar Enter.
 - Cada palabra y cada paso se completan una sola vez.
 - La entrada se deshabilita durante acciones, pausas y transiciones.
@@ -143,7 +148,8 @@ composición actual de `Playground`.
 2. Abre `Assets/_Project/Scenes/Playground.unity` y pulsa Play.
 3. Completa las tres recetas en orden: Pan caliente (4 palabras), Sopa de
    verduras (7 palabras) y El Plato del Pueblo (13 palabras).
-4. Comprueba que una letra incorrecta no avance y que Backspace retroceda.
+4. Comprueba que una letra incorrecta quede escrita, que permita seguir
+   tecleando y que Backspace sea necesario para corregirla.
 5. Entre palabras, comprueba que la entrada quede bloqueada durante la espera
    configurada y luego aparezca el siguiente paso.
 6. Comprueba que el HUD marque el paso activo, atenúe los posteriores y muestre
