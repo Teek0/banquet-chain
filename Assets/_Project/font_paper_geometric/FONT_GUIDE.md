@@ -26,3 +26,13 @@ R S T U V W X Y Z
 - Pivote recomendado: `Center`.
 
 La Ñ individual utiliza el nombre `letter_ENYE.png`.
+
+## Integración jugable
+
+- `PaperAlphabetGlyphSet.asset` reúne las 27 letras de `gray` y `red`.
+- `PaperWordRenderer` compone la palabra activa con imágenes, conservando la
+  proporción de cada glifo y reduciendo el tamaño cuando una palabra es larga.
+- Las letras pendientes se muestran en gris y el prefijo correcto en rojo.
+- `Ñ` tiene glifo propio. Las vocales con tilde y `Ü` usan el glifo de su vocal
+  base porque este alfabeto no contiene diacríticos.
+- `WordLabel` conserva TextMesh Pro como respaldo si faltara algún sprite.

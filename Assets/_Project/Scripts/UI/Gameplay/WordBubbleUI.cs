@@ -9,12 +9,12 @@ public sealed class WordBubbleUI : MonoBehaviour
     [SerializeField] private TMP_Text stateLabel;
     [SerializeField] private TMP_Text wordLabel;
     [SerializeField] private TMP_Text feedbackLabel;
+    [SerializeField] private PaperWordRenderer paperWordRenderer;
 
     [Header("Demo")]
     [SerializeField] private string initialWord = "mantequilla";
 
     [Header("Feedback")]
-    [SerializeField] private float errorDuration = 0.35f;
     [SerializeField] private float completionDuration = 0.8f;
     [SerializeField] private Color activeColor = new(1f, 0.82f, 0.28f);
     [SerializeField] private Color completedColor = new(0.42f, 0.9f, 0.58f);
@@ -26,6 +26,11 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void Awake()
     {
+        if (paperWordRenderer == null && wordLabel != null)
+        {
+            paperWordRenderer = wordLabel.GetComponent<PaperWordRenderer>();
+        }
+
         if (typingInput == null
             || stateLabel == null
             || wordLabel == null
@@ -152,6 +157,14 @@ public sealed class WordBubbleUI : MonoBehaviour
 
         string displayedWord = typingInput.ExpectedWord ?? string.Empty;
         int safeProgress = Mathf.Clamp(progress, 0, displayedWord.Length);
+
+        if (paperWordRenderer != null
+            && paperWordRenderer.RenderWord(displayedWord, safeProgress))
+        {
+            wordLabel.text = displayedWord.ToUpperInvariant();
+            return;
+        }
+
         string completed = EscapeRichText(
             displayedWord.Substring(0, safeProgress)
         );

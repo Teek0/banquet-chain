@@ -52,8 +52,10 @@ partida completa provisional dentro del Editor:
   movimiento excesivo.
 - La pasada integral cubre errores, Backspace, teclas ignoradas, pausa,
   reinicios intermedios, tres recetas, final y referencias críticas.
+- La palabra activa usa el alfabeto gráfico de papel: gris para letras
+  pendientes y rojo para el prefijo escrito correctamente.
 - El búfer de escritura pasa 15/15 pruebas específicas y Play Mode pasa 24/24.
-- La batería Edit Mode queda en 47/48: solo falla la comprobación de 960 × 600
+- La batería Edit Mode queda en 49/50: solo falla la comprobación de 960 × 600
   de `MainMenu` por la edición paralela indicada arriba.
 
 No hay defectos bloqueantes confirmados dentro del Editor. El siguiente y
@@ -107,8 +109,9 @@ Estados de `RecipeRunner`: `PresentingOrder`, `AwaitingInput`,
 - Cada palabra y cada paso se completan una sola vez.
 - La entrada se deshabilita durante acciones, pausas y transiciones.
 
-El texto original se conserva para mostrar correctamente palabras como
-`freír`, `limón` o `azúcar`.
+El texto original se conserva en los datos y en el respaldo TMP. El alfabeto
+gráfico incluye `Ñ`; las vocales acentuadas y `Ü` usan el mismo glifo de papel
+que su vocal base porque el recurso no contiene variantes con diacríticos.
 
 ## Controles actuales
 
@@ -124,15 +127,18 @@ El texto original se conserva para mostrar correctamente palabras como
 - `Assets/_Project/Scenes/Playground.unity`: escena jugable y cocina fija.
 - `Assets/_Project/Scripts/Gameplay/Typing/`: normalizador y entrada de texto.
 - `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
-- `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales y
-  coordinación de actores, plato y gato por eventos.
+- `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales,
+  coordinación de actores, plato, gato y render de palabras con letras de
+  papel por eventos.
 - `Assets/_Project/Scripts/Gameplay/Flow/`: coordinación de las tres recetas,
   tutorial, audio, celebraciones y cierre de partida.
 - `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
 - `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
+- `Assets/_Project/font_paper_geometric/PaperAlphabetGlyphSet.asset`: las 27
+  letras grises y rojas utilizadas por la palabra activa.
 - `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
   eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 47 pruebas de escritura, datos, HUD y
+- `Assets/_Project/Tests/EditMode/`: 50 pruebas de escritura, datos, HUD y
   escenas de presentación.
 - `Assets/_Project/Tests/PlayMode/`: 24 pruebas del ciclo, actores, plato, gato
   y flujo completo.
@@ -163,7 +169,7 @@ composición actual de `Playground`.
    del pedido siguiente; su satisfacción debe avanzar de 0 a 3.
 10. Tras el tercer plato, confirma el mensaje final, el ronroneo y la
     transición automática a `Credits`.
-11. En `Window → General → Test Runner`, ejecuta las 47 pruebas de `EditMode` y
+11. En `Window → General → Test Runner`, ejecuta las 50 pruebas de `EditMode` y
     las 24 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.

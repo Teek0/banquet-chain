@@ -551,8 +551,8 @@ MonoBehaviour:
   stateLabel: {fileID: 617526855}
   wordLabel: {fileID: 497624129}
   feedbackLabel: {fileID: 1791559988}
+  paperWordRenderer: {fileID: 497624131}
   initialWord: 
-  errorDuration: 0.35
   completionDuration: 0.8
   activeColor: {r: 1, g: 0.82, b: 0.28, a: 1}
   completedColor: {r: 0.42, g: 0.9, b: 0.58, a: 1}
@@ -1750,6 +1750,7 @@ GameObject:
   - component: {fileID: 497624128}
   - component: {fileID: 497624130}
   - component: {fileID: 497624129}
+  - component: {fileID: 497624131}
   m_Layer: 5
   m_Name: WordLabel
   m_TagString: Untagged
@@ -1876,6 +1877,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 497624127}
   m_CullTransparentMesh: 1
+--- !u!114 &497624131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497624127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c842d9f081e7441c8ca769f206a4fa60, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: BanquetChain.Presentation::PaperWordRenderer
+  alphabet: {fileID: 11400000, guid: d953a1d3be9f45a1b23d75b531740e54, type: 2}
+  fallbackLabel: {fileID: 497624129}
+  maximumGlyphHeight: 64
+  spacing: 4
 --- !u!1 &581944447
 GameObject:
   m_ObjectHideFlags: 0

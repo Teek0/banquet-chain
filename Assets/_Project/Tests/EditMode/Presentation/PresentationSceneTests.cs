@@ -118,6 +118,33 @@ public sealed class PresentationSceneTests
     }
 
     [Test]
+    public void Playground_ActiveWordUsesPaperAlphabet()
+    {
+        Scene scene = OpenScene("Assets/_Project/Scenes/Playground.unity");
+
+        try
+        {
+            PaperWordRenderer renderer = FindInScene<PaperWordRenderer>(scene);
+            Assert.That(renderer, Is.Not.Null);
+            Assert.That(renderer.IsConfigured, Is.True);
+            Assert.That(renderer.Alphabet.GlyphCount, Is.EqualTo(27));
+            Assert.That(renderer.RenderWord("limón", 2), Is.True);
+
+            Image[] renderedGlyphs = renderer
+                .GetComponentsInChildren<Image>(true);
+            Assert.That(renderedGlyphs.Length, Is.EqualTo(5));
+            renderer.Alphabet.TryGetGlyph('l', true, out Sprite redL);
+            renderer.Alphabet.TryGetGlyph('m', false, out Sprite grayM);
+            Assert.That(renderedGlyphs[0].sprite, Is.SameAs(redL));
+            Assert.That(renderedGlyphs[2].sprite, Is.SameAs(grayM));
+        }
+        finally
+        {
+            EditorSceneManager.CloseScene(scene, true);
+        }
+    }
+
+    [Test]
     public void Recipes_KeepStepDelaysWithinReadableRhythm()
     {
         string[] paths =
