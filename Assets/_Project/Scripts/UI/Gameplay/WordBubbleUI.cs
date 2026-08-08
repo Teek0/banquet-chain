@@ -18,7 +18,7 @@ public sealed class WordBubbleUI : MonoBehaviour
     [SerializeField] private float completionDuration = 0.8f;
     [SerializeField] private Color activeColor = new(1f, 0.82f, 0.28f);
     [SerializeField] private Color completedColor = new(0.42f, 0.9f, 0.58f);
-    [SerializeField] private Color pendingColor = Color.white;
+    [SerializeField] private Color pendingColor = new(0.65f, 0.65f, 0.65f);
     [SerializeField] private Color errorColor = new(1f, 0.38f, 0.32f);
     [SerializeField] private Color successColor = new(0.42f, 0.9f, 0.58f);
 
@@ -158,29 +158,32 @@ public sealed class WordBubbleUI : MonoBehaviour
         string displayedWord = typingInput.ExpectedWord ?? string.Empty;
         int safeProgress = Mathf.Clamp(progress, 0, displayedWord.Length);
 
+        string typed = typingInput.TypedText.ToUpperInvariant();
+        string paperWord = typed + displayedWord.Substring(Mathf.Min(typed.Length, displayedWord.Length));
         if (paperWordRenderer != null
-            && paperWordRenderer.RenderWord(displayedWord, safeProgress))
+            && paperWordRenderer.RenderWord(paperWord, typingInput.CorrectPrefixLength, typed.Length))
         {
-            wordLabel.text = displayedWord.ToUpperInvariant();
             return;
         }
-
-        string completed = EscapeRichText(
-            displayedWord.Substring(0, safeProgress)
-        );
-        string pending = EscapeRichText(
-            displayedWord.Substring(safeProgress)
-        );
+        string completed = EscapeRichText(displayedWord.Substring(0, safeProgress));
+        string typedRemainder = typingInput.HasError
+            ? EscapeRichText(typed.Substring(Mathf.Min(safeProgress, typed.Length)))
+            : string.Empty;
+        string pending = EscapeRichText(displayedWord.Substring(safeProgress));
 
         string completedHex = ColorUtility.ToHtmlStringRGB(completedColor);
         string pendingHex = ColorUtility.ToHtmlStringRGB(pendingColor);
+        string errorHex = ColorUtility.ToHtmlStringRGB(errorColor);
 
+        string typedMarkup = typedRemainder.Length > 0
+            ? $"<color=#{errorHex}><b>{typedRemainder}</b></color>"
+            : string.Empty;
         string pendingMarkup = pending.Length > 0
             ? $"<color=#{pendingHex}><b>[</b>{pending}<b>]</b></color>"
             : string.Empty;
 
         wordLabel.text = $"<color=#{completedHex}><b><u>{completed}</u></b></color>"
-            + pendingMarkup;
+            + typedMarkup + pendingMarkup;
     }
 
     private void SetState(string message, Color color)

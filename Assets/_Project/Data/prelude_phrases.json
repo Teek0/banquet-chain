@@ -1,0 +1,15 @@
+{
+  "language": "ES",
+  "prelude_phrases": [
+    { "line": "Cada solsticio, el pueblo de Aethel despierta con una misión sagrada: recolectar los tributos de la tierra y el mar." },
+    { "line": "De todos los rincones llegan las ofrendas. Panaderos y granjeros, jóvenes y ancianos; cada mano cuenta en esta hazaña de fe." },
+    { "line": "Allí duerme Sun, el Guardián Milenario. Su silencio es paz y su ronroneo es prosperidad. Esperamos con reverencia su despertar." },
+    { "line": "Los fuegos están encendidos y el escenario ceremonial, listo. Maestros de la cocina, es hora de orquestar el banquete sagrado." }
+  ],
+    "prelude_words": [
+    { "line": "RECOLECTAR" },
+    { "line": "OFRENDAS" },
+    { "line": "GUARDIAN" },
+    { "line": "BANQUETE" }
+    ]
+}

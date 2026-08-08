@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/MainMenu.unity
     guid: df22d9f0271965249ba6067429ef5114
   - enabled: 1
+    path: Assets/_Project/Scenes/Prelude.unity
+    guid: 15df01eb8a1af194d81ea361d80fda05
+  - enabled: 1
     path: Assets/_Project/Scenes/Playground.unity
     guid: a277d2e9ae488fa408b2408e1eee6f8f
   - enabled: 1

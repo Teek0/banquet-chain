@@ -10,11 +10,18 @@ public sealed class PaperWordRenderer : MonoBehaviour
     [SerializeField] private TMP_Text fallbackLabel;
     [SerializeField, Min(1f)] private float maximumGlyphHeight = 64f;
     [SerializeField, Min(0f)] private float spacing = 4f;
+    [SerializeField] private Color correctTint = new(0.42f, 0.9f, 0.58f);
 
     private readonly List<Image> glyphImages = new();
 
     public bool IsConfigured => alphabet != null && alphabet.IsConfigured;
     public PaperAlphabetGlyphSet Alphabet => alphabet;
+
+    public void Configure(PaperAlphabetGlyphSet glyphSet, TMP_Text label)
+    {
+        alphabet = glyphSet;
+        fallbackLabel = label;
+    }
 
     private void Awake()
     {
@@ -25,6 +32,11 @@ public sealed class PaperWordRenderer : MonoBehaviour
     }
 
     public bool RenderWord(string word, int correctPrefixLength)
+    {
+        return RenderWord(word, correctPrefixLength, correctPrefixLength);
+    }
+
+    public bool RenderWord(string word, int correctPrefixLength, int typedLength)
     {
         string displayedWord = word ?? string.Empty;
 
@@ -47,15 +59,16 @@ public sealed class PaperWordRenderer : MonoBehaviour
 
         for (int index = 0; index < displayedWord.Length; index++)
         {
-            bool useRedVariant = index < safePrefix;
+            bool isTyped = index < typedLength;
+            bool isError = isTyped && index >= safePrefix;
             alphabet.TryGetGlyph(
                 displayedWord[index],
-                useRedVariant,
+                isError,
                 out Sprite glyph
             );
             Image image = glyphImages[index];
             image.sprite = glyph;
-            image.color = Color.white;
+            image.color = index < safePrefix ? correctTint : Color.white;
         }
 
         LayoutGlyphs(displayedWord.Length);

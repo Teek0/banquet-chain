@@ -11,6 +11,11 @@ public sealed class TypingInput : MonoBehaviour
     private bool completionReported;
     private bool resumeInputAfterSuspension;
     private Keyboard keyboard;
+    private float nextBackspaceRepeat;
+    private bool backspaceWasDown;
+
+    [SerializeField, Min(0f)] private float backspaceRepeatDelay = 0.35f;
+    [SerializeField, Min(0.01f)] private float backspaceRepeatInterval = 0.06f;
 
     public event Action<char, int> CorrectCharacterEntered;
     public event Action<char, int> IncorrectCharacterEntered;
@@ -50,10 +55,48 @@ public sealed class TypingInput : MonoBehaviour
 
     private void Update()
     {
-        if (Keyboard.current != null
-            && Keyboard.current.backspaceKey.wasPressedThisFrame)
+        RefreshKeyboardSubscription();
+
+        if (Keyboard.current == null || !IsInputEnabled)
+        {
+            return;
+        }
+
+        bool backspaceDown = Keyboard.current.backspaceKey.isPressed;
+        bool backspaceStarted = backspaceDown && !backspaceWasDown;
+
+        if (backspaceStarted || Keyboard.current.backspaceKey.wasPressedThisFrame)
         {
             ProcessBackspace();
+            nextBackspaceRepeat = Time.unscaledTime + backspaceRepeatDelay;
+        }
+        else if (backspaceDown
+            && Time.unscaledTime >= nextBackspaceRepeat)
+        {
+            ProcessBackspace();
+            nextBackspaceRepeat = Time.unscaledTime + backspaceRepeatInterval;
+        }
+
+        backspaceWasDown = backspaceDown;
+    }
+
+    private void RefreshKeyboardSubscription()
+    {
+        Keyboard currentKeyboard = Keyboard.current;
+        if (currentKeyboard == keyboard)
+        {
+            return;
+        }
+
+        if (keyboard != null)
+        {
+            keyboard.onTextInput -= HandleTextInput;
+        }
+
+        keyboard = currentKeyboard;
+        if (keyboard != null)
+        {
+            keyboard.onTextInput += HandleTextInput;
         }
     }
 

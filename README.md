@@ -13,6 +13,12 @@ es local y no se versiona.
 Están terminados los bloques 01 a 05 y 07 a 20 del backlog. Ya existe una
 partida completa provisional dentro del Editor:
 
+- `Prelude` presenta cuatro imágenes con las frases de
+  `Assets/_Project/Data/prelude_phrases.json`; cada lámina avanza con tiempo,
+  clic o Espacio/Enter mediante un fundido y termina en `Playground`. Cada
+  lámina exige escribir su palabra de `prelude_words`; el texto colorea el
+  prefijo correcto en verde, los errores en rojo y lo pendiente en gris,
+  usando las letras de `font_paper_geometric`.
 - `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
 - `TypingInput` procesa una palabra activa, normaliza mayúsculas y tildes,
   admite Backspace y emite eventos de progreso, error y finalización.
@@ -65,14 +71,15 @@ solicitud explícita.
 ## Flujo de escenas
 
 La aplicación comienza en `Boot`, crea el `AppRoot` persistente y carga
-`MainMenu`. Desde el menú se entra a `Playground` o `Credits`.
+`MainMenu`. Desde el menú se entra a `Prelude`, `Playground` o `Credits`.
 
 Orden configurado en el Build Profile:
 
 1. `Boot`
 2. `MainMenu`
-3. `Playground`
-4. `Credits`
+3. `Prelude`
+4. `Playground`
+5. `Credits`
 
 `AppRootBootstrapper` permite iniciar Play directamente desde cualquier escena
 navegable sin duplicar los servicios persistentes.
@@ -125,6 +132,10 @@ que su vocal base porque el recurso no contiene variantes con diacríticos.
 ## Estructura relevante
 
 - `Assets/_Project/Scenes/Playground.unity`: escena jugable y cocina fija.
+- `Assets/_Project/Scenes/Prelude.unity`: prólogo de cuatro láminas con texto
+  leído desde JSON y transición por fundido.
+- `Assets/_Project/Scripts/Gameplay/Flow/PreludeController.cs`: controla el
+  orden, temporización, entrada y navegación del prólogo.
 - `Assets/_Project/Scripts/Gameplay/Typing/`: normalizador y entrada de texto.
 - `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
 - `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales,
