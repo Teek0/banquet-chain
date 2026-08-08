@@ -14,7 +14,7 @@ TagManager:
   - Background
   - BigCat
   - Chefs
-  - 
+  - Furniture
   - 
   - 
   - 
@@ -47,8 +47,14 @@ TagManager:
   - name: BigCat
     uniqueID: 4062807815
     locked: 0
+  - name: BackFurniture
+    uniqueID: 1683163637
+    locked: 0
   - name: Chefs
     uniqueID: 764228635
+    locked: 0
+  - name: FrontFurniture
+    uniqueID: 321502219
     locked: 0
   m_RenderingLayers:
   - Default
