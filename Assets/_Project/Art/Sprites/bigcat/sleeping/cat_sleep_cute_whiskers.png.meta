@@ -1,0 +1,221 @@
+fileFormatVersion: 2
+guid: fd93863a72cb3144f85b525861788fd9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7497705113562052583
+    second: cat_sleep_cute_whiskers_0
+  - first:
+      213: 2836721581192925393
+    second: cat_sleep_cute_whiskers_1
+  - first:
+      213: 4429680437444980282
+    second: cat_sleep_cute_whiskers_2
+  - first:
+      213: 1401052232846090737
+    second: cat_sleep_cute_whiskers_3
+  - first:
+      213: 1862732941675846338
+    second: cat_sleep_cute_whiskers_4
+  - first:
+      213: -403825450408480501
+    second: cat_sleep_cute_whiskers_5
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 136, z: 370, w: 205}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: 0
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cat_sleep_cute_whiskers_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 141
+        width: 143
+        height: 153
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 918018b7cecc2f790800000000000000
+      internalID: -7497705113562052583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape:
+    - - {x: 162, y: 26}
+      - {x: 162, y: 38}
+      - {x: 159, y: 40}
+      - {x: 136, y: 40}
+      - {x: 59, y: 24}
+      - {x: 37, y: 8}
+      - {x: 37, y: -5}
+      - {x: 44, y: -5}
+    - - {x: -130, y: 1}
+      - {x: -130, y: 9}
+      - {x: -238, y: 37}
+      - {x: -256, y: 37}
+      - {x: -256, y: 22}
+      - {x: -244, y: 18}
+      - {x: -137, y: -4}
+      - {x: -132, y: -4}
+    - - {x: 164, y: -39}
+      - {x: 164, y: -26}
+      - {x: 54, y: -26}
+      - {x: 38, y: -28}
+      - {x: 38, y: -40}
+      - {x: 134, y: -40}
+    - - {x: -126, y: -41}
+      - {x: -126, y: -29}
+      - {x: -127, y: -28}
+      - {x: -242, y: -28}
+      - {x: -254, y: -29}
+      - {x: -254, y: -44}
+      - {x: -183, y: -44}
+    - - {x: -178, y: -99}
+      - {x: -119, y: -79}
+      - {x: -119, y: -67}
+      - {x: -152, y: -67}
+      - {x: -233, y: -96}
+      - {x: -233, y: -101}
+      - {x: -231, y: -110}
+      - {x: -225, y: -110}
+    - - {x: 146, y: -89}
+      - {x: 135, y: -80}
+      - {x: 66, y: -67}
+      - {x: 36, y: -67}
+      - {x: 34, y: -69}
+      - {x: 34, y: -81}
+      - {x: 127, y: -102}
+      - {x: 146, y: -102}
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      cat_sleep_cute_whiskers_0: -7497705113562052583
+      cat_sleep_cute_whiskers_1: 2836721581192925393
+      cat_sleep_cute_whiskers_2: 4429680437444980282
+      cat_sleep_cute_whiskers_3: 1401052232846090737
+      cat_sleep_cute_whiskers_4: 1862732941675846338
+      cat_sleep_cute_whiskers_5: -403825450408480501
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -7,7 +7,7 @@
   <Project Path="BanquetChain.Presentation.csproj" />
   <Project Path="BanquetChain.Presentation.PlayModeTests.csproj" />
   <Project Path="BanquetChain.Recipes.Tests.csproj" />
-  <Project Path="BanquetChain.Typing.csproj" />
   <Project Path="BanquetChain.PresentationScene.Tests.csproj" />
+  <Project Path="BanquetChain.Typing.csproj" />
   <Project Path="BanquetChain.Recipes.PlayModeTests.csproj" />
 </Solution>

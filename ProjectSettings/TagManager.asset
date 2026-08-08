@@ -13,7 +13,7 @@ TagManager:
   - UI
   - Background
   - BigCat
-  - 
+  - Chefs
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: BigCat
     uniqueID: 4062807815
+    locked: 0
+  - name: Chefs
+    uniqueID: 764228635
     locked: 0
   m_RenderingLayers:
   - Default

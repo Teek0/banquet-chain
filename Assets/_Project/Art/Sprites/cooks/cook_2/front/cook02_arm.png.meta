@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51e8874ec0df10441b2725acc5f2eab6
+guid: 7445728ca6925154683019f0b0de3a94
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -116,10 +116,10 @@ TextureImporter:
       name: cook02_arm_left_0
       rect:
         serializedVersion: 2
-        x: 23
+        x: 24
         y: 23
         width: 497
-        height: 1049
+        height: 1281
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
