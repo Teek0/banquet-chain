@@ -55,7 +55,7 @@ public sealed class GameFlowTests
         Assert.That(activated, Is.EqualTo(new[] { 0, 1, 2 }));
         Assert.That(flow.CompletedDishes, Is.EqualTo(3));
         Assert.That(cat.Satisfaction, Is.EqualTo(3));
-        Assert.That(cat.State, Is.EqualTo(CatVisualState.Satisfied));
+        Assert.That(cat.State, Is.EqualTo(CatVisualState.Sleeping));
     }
 
     [UnityTest]
@@ -128,7 +128,7 @@ public sealed class GameFlowTests
 
         yield return WaitForFlowState(flow, GameFlowState.Completed);
         Assert.That(flow.CompletedDishes, Is.EqualTo(3));
-        Assert.That(cat.State, Is.EqualTo(CatVisualState.Satisfied));
+        Assert.That(cat.State, Is.EqualTo(CatVisualState.Sleeping));
     }
 
     private (RecipeRunner runner, TypingInput typingInput) CreateRunner()
@@ -179,7 +179,9 @@ public sealed class GameFlowTests
         serializedFlow.FindProperty("playOnStart").boolValue = false;
         serializedFlow.FindProperty("dishCelebrationDuration").floatValue = 0f;
         serializedFlow.FindProperty("interRecipeDelay").floatValue = 0f;
+        serializedFlow.FindProperty("finalEatingDuration").floatValue = 0f;
         serializedFlow.FindProperty("finalCelebrationDuration").floatValue = 0f;
+        serializedFlow.FindProperty("finalSleepingDuration").floatValue = 0f;
         serializedFlow.FindProperty("loadCreditsOnComplete").boolValue = false;
         SerializedProperty recipeList = serializedFlow.FindProperty("recipes");
         recipeList.arraySize = recipes.Length;

@@ -6,6 +6,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TypingInput typingInput;
+    [SerializeField] private RecipeRunner recipeRunner;
     [SerializeField] private GameFlow gameFlow;
     [SerializeField] private TMP_Text stateLabel;
     [SerializeField] private TMP_Text wordLabel;
@@ -29,6 +30,8 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void Awake()
     {
+        recipeRunner ??= FindFirstObjectByType<RecipeRunner>();
+
         if (paperWordRenderer == null && wordLabel != null)
         {
             paperWordRenderer = wordLabel.GetComponent<PaperWordRenderer>();
@@ -48,6 +51,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void OnEnable()
     {
+        recipeRunner ??= FindFirstObjectByType<RecipeRunner>();
         gameFlow ??= FindFirstObjectByType<GameFlow>();
 
         if (typingInput == null)
@@ -63,6 +67,11 @@ public sealed class WordBubbleUI : MonoBehaviour
         if (gameFlow != null)
         {
             gameFlow.RecipeActivated += HandleRecipeActivated;
+        }
+
+        if (recipeRunner != null)
+        {
+            recipeRunner.StepStarted += HandleStepStarted;
         }
     }
 
@@ -89,6 +98,11 @@ public sealed class WordBubbleUI : MonoBehaviour
         if (gameFlow != null)
         {
             gameFlow.RecipeActivated -= HandleRecipeActivated;
+        }
+
+        if (recipeRunner != null)
+        {
+            recipeRunner.StepStarted -= HandleStepStarted;
         }
 
         StopFeedbackRoutine();
@@ -167,8 +181,41 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void HandleRecipeActivated(int recipeIndex, RecipeData _)
     {
-        revealExpectedWord = recipeIndex < revealedRecipeCount;
+        revealExpectedWord = ShouldRevealExpectedWord(
+            recipeIndex,
+            recipeRunner != null ? recipeRunner.CurrentStep : null
+        );
         RefreshWord(typingInput != null ? typingInput.Progress : 0);
+    }
+
+    private void HandleStepStarted(RecipeStep step, int _)
+    {
+        int recipeIndex = gameFlow != null ? gameFlow.CurrentRecipeIndex : 0;
+        revealExpectedWord = ShouldRevealExpectedWord(recipeIndex, step);
+        RefreshWord(typingInput != null ? typingInput.Progress : 0);
+    }
+
+    private bool ShouldRevealExpectedWord(int recipeIndex, RecipeStep step)
+    {
+        if (recipeIndex < revealedRecipeCount || step == null)
+        {
+            return true;
+        }
+
+        WorldRecipeBubbleUI[] bubbles = FindObjectsByType<WorldRecipeBubbleUI>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None
+        );
+
+        foreach (WorldRecipeBubbleUI bubble in bubbles)
+        {
+            if (bubble != null && bubble.CanPresentStep(step))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void RefreshWord(int progress)

@@ -10,25 +10,6 @@ using UnityEngine.UI;
 public static class GameplaySceneConfigurator
 {
     private const string PlaygroundPath = "Assets/_Project/Scenes/Playground.unity";
-    private const string SessionKey = "BanquetChain.GameplaySceneConfigured";
-
-    [InitializeOnLoadMethod]
-    private static void ConfigureOpenPlaygroundOnce()
-    {
-        EditorApplication.delayCall += () =>
-        {
-            if (Application.isBatchMode
-                || SessionState.GetBool(SessionKey, false)
-                || SceneManager.GetActiveScene().path != PlaygroundPath)
-            {
-                return;
-            }
-
-            SessionState.SetBool(SessionKey, true);
-            ConfigurePlayground();
-        };
-    }
-
     [MenuItem("Banquet Chain/Configurar gameplay en escenario")]
     public static void ConfigurePlayground()
     {
@@ -55,6 +36,23 @@ public static class GameplaySceneConfigurator
         KitchenActor chef1 = RequireWorldActor("Chef1", "despensa", "CHEF 1");
         KitchenActor chef2 = RequireWorldActor("Chef2", "horno", "CHEF 2");
         KitchenActor chef3 = RequireWorldActor("Chef3", "servicio", "CHEF 3");
+
+        if (coordinator == null)
+        {
+            GameObject coordinatorObject = new("KitchenActorCoordinator");
+            coordinatorObject.transform.SetParent(
+                chef1 != null ? chef1.transform.parent : null,
+                false
+            );
+            coordinator = coordinatorObject.AddComponent<KitchenActorCoordinator>();
+        }
+
+        SetObjectReference(coordinator, "recipeRunner", runner);
+        SetObjectReference(
+            coordinator,
+            "typingInput",
+            runner.GetComponent<TypingInput>()
+        );
 
         ConfigureActorBubble(
             "Actor_Despensa", chef1, "despensa", runner, canvas
@@ -126,7 +124,7 @@ public static class GameplaySceneConfigurator
 
         if (actor == null)
         {
-            actor = Undo.AddComponent<KitchenActor>(actorObject);
+            actor = actorObject.AddComponent<KitchenActor>();
         }
 
         actor.ConfigureIdentity(actorId, displayName);
@@ -145,16 +143,33 @@ public static class GameplaySceneConfigurator
     {
         GameObject panel = FindSceneObject(panelName);
 
-        if (panel == null || actor == null)
+        if (actor == null)
         {
             return;
+        }
+
+        if (panel == null)
+        {
+            panel = new GameObject(
+                panelName,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image),
+                typeof(CanvasGroup),
+                typeof(WorldRecipeBubbleUI)
+            );
+            panel.transform.SetParent(canvas.transform, false);
+            Image newBackground = panel.GetComponent<Image>();
+            newBackground.color = new Color(0.96f, 0.9f, 0.72f, 0.95f);
+            newBackground.raycastTarget = false;
         }
 
         KitchenActor oldUiActor = panel.GetComponent<KitchenActor>();
 
         if (oldUiActor != null)
         {
-            Undo.DestroyObjectImmediate(oldUiActor);
+            oldUiActor.enabled = false;
+            SetInteger(oldUiActor, "presentationPriority", -10);
         }
 
         RectTransform root = panel.GetComponent<RectTransform>();
@@ -208,7 +223,6 @@ public static class GameplaySceneConfigurator
                 typeof(CanvasGroup),
                 typeof(WorldRecipeBubbleUI)
             );
-            Undo.RegisterCreatedObjectUndo(bubbleObject, "Crear burbuja de SUN");
             bubbleObject.transform.SetParent(canvas.transform, false);
         }
 
@@ -257,7 +271,6 @@ public static class GameplaySceneConfigurator
                 prefab,
                 bigCat.gameObject.scene
             ) as GameObject;
-            Undo.RegisterCreatedObjectUndo(sleepingCat, "Agregar gato dormido");
         }
 
         sleepingCat.transform.SetParent(bigCat.parent, false);
@@ -271,7 +284,6 @@ public static class GameplaySceneConfigurator
         if (host == null)
         {
             host = new GameObject("CatFlowActor");
-            Undo.RegisterCreatedObjectUndo(host, "Crear controlador de SUN");
             host.transform.SetParent(bigCat.parent, false);
         }
 
@@ -305,7 +317,6 @@ public static class GameplaySceneConfigurator
                 typeof(CanvasRenderer),
                 typeof(Image)
             );
-            Undo.RegisterCreatedObjectUndo(iconObject, $"Crear {objectName}");
             iconObject.transform.SetParent(parent, false);
         }
         else
@@ -326,7 +337,7 @@ public static class GameplaySceneConfigurator
 
     private static T GetOrAdd<T>(GameObject target) where T : Component
     {
-        return target.GetComponent<T>() ?? Undo.AddComponent<T>(target);
+        return target.GetComponent<T>() ?? target.AddComponent<T>();
     }
 
     private static GameObject FindSceneObject(string objectName)

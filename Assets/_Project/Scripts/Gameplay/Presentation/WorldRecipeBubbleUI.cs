@@ -25,6 +25,20 @@ public sealed class WorldRecipeBubbleUI : MonoBehaviour
 
     private bool isSubscribed;
 
+    public bool CanPresentStep(RecipeStep step)
+    {
+        return isActiveAndEnabled
+            && mode == WorldRecipeBubbleMode.ActorStep
+            && worldTarget != null
+            && iconImage != null
+            && step?.Icon != null
+            && string.Equals(
+                step.ActorId?.Trim(),
+                actorId.Trim(),
+                System.StringComparison.OrdinalIgnoreCase
+            );
+    }
+
     public void Configure(
         RecipeRunner runner,
         WorldRecipeBubbleMode bubbleMode,
