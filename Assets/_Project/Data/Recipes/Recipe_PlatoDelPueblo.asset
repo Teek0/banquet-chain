@@ -46,7 +46,7 @@ MonoBehaviour:
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
-  - expectedWord: cocinar
+  - expectedWord: freir
     icon: {fileID: -4179183935955756627, guid: 8f53438e981ccb84c8edb587ecc5c583, type: 3}
     actorId: horno
     reactionType: 2

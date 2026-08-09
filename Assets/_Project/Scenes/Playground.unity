@@ -700,7 +700,7 @@ MonoBehaviour:
   paperWordRenderer: {fileID: 497624131}
   initialWord: 
   revealedRecipeCount: 1
-  hintDelaySeconds: 10
+  hintDelaySeconds: 8
   completionDuration: 0.8
   activeColor: {r: 1, g: 0.82, b: 0.28, a: 1}
   completedColor: {r: 0.42, g: 0.9, b: 0.58, a: 1}
@@ -1592,6 +1592,7 @@ MonoBehaviour:
   finalEatingDuration: 1.2
   finalCelebrationDuration: 6.5
   finalSleepingDuration: 1.5
+  finalMessageDuration: 10
   finalOverlay: {fileID: 2141736486}
   finalLabel: {fileID: 581944449}
   loadCreditsOnComplete: 1
@@ -9759,7 +9760,8 @@ MonoBehaviour:
   satisfiedColor: {r: 0.38, g: 0.72, b: 0.48, a: 1}
   receivingDuration: 0.6
   transitionSpeed: 14
-  satisfiedBounceHeight: 0.75
+  receivingBounceHeight: 0.45
+  satisfiedBounceHeight: 0.3
 --- !u!4 &1030929739590152490
 Transform:
   m_ObjectHideFlags: 0

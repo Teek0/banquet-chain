@@ -31,6 +31,7 @@ public sealed class GameFlow : MonoBehaviour
     [SerializeField, Min(0f)] private float finalEatingDuration = 1.2f;
     [SerializeField, Min(0f)] private float finalCelebrationDuration = 3f;
     [SerializeField, Min(0f)] private float finalSleepingDuration = 1.5f;
+    [SerializeField, Min(0f)] private float finalMessageDuration = 10f;
 
     [Header("Final")]
     [SerializeField] private CanvasGroup finalOverlay;
@@ -235,9 +236,11 @@ public sealed class GameFlow : MonoBehaviour
 
             ShowFinalOverlay();
             BanquetCompleted?.Invoke();
+            SetState(GameFlowState.Completed);
+
+            yield return WaitForDuration(finalMessageDuration);
 
             transitionRoutine = null;
-            SetState(GameFlowState.Completed);
 
             if (loadCreditsOnComplete)
             {

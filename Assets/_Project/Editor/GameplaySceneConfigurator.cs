@@ -100,6 +100,7 @@ public static class GameplaySceneConfigurator
         SetObjectReference(gameFlow, "catController", catController);
         SetFloat(gameFlow, "finalEatingDuration", 1.2f);
         SetFloat(gameFlow, "finalSleepingDuration", 1.5f);
+        SetFloat(gameFlow, "finalMessageDuration", 10f);
 
         WordBubbleUI wordBubble = FindFirstInScene<WordBubbleUI>(scene);
         if (wordBubble != null)

@@ -16,7 +16,7 @@ public sealed class WordBubbleUI : MonoBehaviour
     [Header("Demo")]
     [SerializeField] private string initialWord = "mantequilla";
     [SerializeField, Min(0)] private int revealedRecipeCount = 1;
-    [SerializeField, Min(0f)] private float hintDelaySeconds = 10f;
+    [SerializeField, Min(0f)] private float hintDelaySeconds = 8f;
 
     [Header("Feedback")]
     [SerializeField] private float completionDuration = 0.8f;
