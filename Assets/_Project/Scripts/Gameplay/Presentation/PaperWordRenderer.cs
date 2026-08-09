@@ -11,8 +11,19 @@ public sealed class PaperWordRenderer : MonoBehaviour
     [SerializeField, Min(1f)] private float maximumGlyphHeight = 64f;
     [SerializeField, Min(0f)] private float spacing = 4f;
     [SerializeField] private Color correctTint = new(0.42f, 0.9f, 0.58f);
+    [SerializeField] private Color pendingTint = new(0.65f, 0.65f, 0.65f);
+
+    [Header("Typing caret")]
+    [SerializeField] private RectTransform caretTransform;
+    [SerializeField] private Graphic caretGraphic;
+    [SerializeField, Min(0.1f)] private float caretBlinkInterval = 0.45f;
+    [SerializeField, Min(1f)] private float caretWidth = 3f;
+    [SerializeField, Range(0.1f, 1f)] private float caretHeightRatio = 0.82f;
 
     private readonly List<Image> glyphImages = new();
+    private bool caretRequested;
+    private float nextCaretBlink;
+    private bool caretBlinkVisible;
 
     public bool IsConfigured => alphabet != null && alphabet.IsConfigured;
     public PaperAlphabetGlyphSet Alphabet => alphabet;
@@ -23,12 +34,54 @@ public sealed class PaperWordRenderer : MonoBehaviour
         fallbackLabel = label;
     }
 
+    public void ConfigureCaret(RectTransform caret, Graphic graphic)
+    {
+        caretTransform = caret;
+        caretGraphic = graphic;
+        caretRequested = false;
+        caretBlinkVisible = false;
+        SetCaretVisible(false);
+    }
+
     private void Awake()
     {
         if (fallbackLabel == null)
         {
             fallbackLabel = GetComponent<TMP_Text>();
         }
+
+        SetCaretVisible(false);
+    }
+
+    private void Update()
+    {
+        if (!caretRequested || caretGraphic == null)
+        {
+            SetCaretVisible(false);
+            return;
+        }
+
+        if (Time.unscaledTime < nextCaretBlink)
+        {
+            return;
+        }
+
+        caretBlinkVisible = !caretBlinkVisible;
+        SetCaretVisible(caretBlinkVisible);
+        nextCaretBlink = Time.unscaledTime + caretBlinkInterval;
+    }
+
+    public void SetCaretActive(bool active)
+    {
+        if (caretRequested == active)
+        {
+            return;
+        }
+
+        caretRequested = active;
+        caretBlinkVisible = active;
+        nextCaretBlink = Time.unscaledTime + caretBlinkInterval;
+        SetCaretVisible(active);
     }
 
     public bool RenderWord(string word, int correctPrefixLength)
@@ -44,6 +97,7 @@ public sealed class PaperWordRenderer : MonoBehaviour
         {
             SetFallbackEnabled(true);
             SetVisibleGlyphCount(0);
+            SetCaretActive(false);
             return false;
         }
 
@@ -68,10 +122,12 @@ public sealed class PaperWordRenderer : MonoBehaviour
             );
             Image image = glyphImages[index];
             image.sprite = glyph;
-            image.color = index < safePrefix ? correctTint : Color.white;
+            image.color = index < safePrefix
+                ? correctTint
+                : isError ? Color.white : pendingTint;
         }
 
-        LayoutGlyphs(displayedWord.Length);
+        LayoutGlyphs(displayedWord.Length, typedLength);
         return true;
     }
 
@@ -85,7 +141,7 @@ public sealed class PaperWordRenderer : MonoBehaviour
             }
         }
 
-        return word.Length > 0;
+        return true;
     }
 
     private void EnsureGlyphCount(int count)
@@ -113,7 +169,7 @@ public sealed class PaperWordRenderer : MonoBehaviour
         }
     }
 
-    private void LayoutGlyphs(int count)
+    private void LayoutGlyphs(int count, int typedLength)
     {
         RectTransform container = (RectTransform)transform;
         float availableWidth = Mathf.Max(1f, container.rect.width);
@@ -159,6 +215,52 @@ public sealed class PaperWordRenderer : MonoBehaviour
                 0f
             );
             cursor += width + spacing;
+        }
+
+        PositionCaret(count, typedLength, glyphHeight);
+    }
+
+    private void PositionCaret(int count, int typedLength, float glyphHeight)
+    {
+        if (caretTransform == null)
+        {
+            return;
+        }
+
+        int safeTypedLength = Mathf.Clamp(typedLength, 0, count);
+        float x = 0f;
+
+        if (count > 0 && safeTypedLength == 0)
+        {
+            RectTransform first = glyphImages[0].rectTransform;
+            x = first.anchoredPosition.x - first.rect.width * 0.5f - spacing * 0.5f;
+        }
+        else if (count > 0)
+        {
+            RectTransform previous = glyphImages[safeTypedLength - 1].rectTransform;
+            x = previous.anchoredPosition.x
+                + previous.rect.width * 0.5f
+                + spacing * 0.5f;
+        }
+
+        float height = Mathf.Max(4f, glyphHeight * caretHeightRatio);
+        caretTransform.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Horizontal,
+            caretWidth
+        );
+        caretTransform.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            height
+        );
+        caretTransform.anchoredPosition = new Vector2(x, 0f);
+        caretTransform.SetAsLastSibling();
+    }
+
+    private void SetCaretVisible(bool visible)
+    {
+        if (caretGraphic != null)
+        {
+            caretGraphic.enabled = visible;
         }
     }
 

@@ -35,6 +35,7 @@ public sealed class CatController : MonoBehaviour
     [Header("Timing")]
     [SerializeField, Min(0.05f)] private float receivingDuration = 0.6f;
     [SerializeField, Min(0f)] private float transitionSpeed = 14f;
+    [SerializeField, Min(0f)] private float satisfiedBounceHeight = 0.75f;
 
     private Vector3 baseLocalPosition;
     private Vector3 baseLocalScale;
@@ -350,7 +351,8 @@ public sealed class CatController : MonoBehaviour
                 break;
             case CatVisualState.Satisfied:
                 scaleBoost = 0.07f + Mathf.Sin(animationClock * 3f) * 0.025f;
-                bounce = Mathf.Abs(Mathf.Sin(animationClock * 2f)) * 4f;
+                bounce = Mathf.Abs(Mathf.Sin(animationClock * 2f))
+                    * satisfiedBounceHeight;
                 break;
         }
 

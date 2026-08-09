@@ -122,10 +122,10 @@ TextureImporter:
       name: fx_mix_wooden_spoon_0
       rect:
         serializedVersion: 2
-        x: 184
-        y: 717
-        width: 643
-        height: 354
+        x: 0
+        y: 0
+        width: 1254
+        height: 1254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -36,7 +36,7 @@ MonoBehaviour:
     transformsDish: 1
   - expectedWord: cortar
     icon: {fileID: 761100573506273824, guid: 6a72bd69eee88164ba66714421724649, type: 3}
-    actorId: servicio
+    actorId: despensa
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1

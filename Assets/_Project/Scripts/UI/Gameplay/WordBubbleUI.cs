@@ -16,6 +16,7 @@ public sealed class WordBubbleUI : MonoBehaviour
     [Header("Demo")]
     [SerializeField] private string initialWord = "mantequilla";
     [SerializeField, Min(0)] private int revealedRecipeCount = 1;
+    [SerializeField, Min(0f)] private float hintDelaySeconds = 10f;
 
     [Header("Feedback")]
     [SerializeField] private float completionDuration = 0.8f;
@@ -27,23 +28,25 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private Coroutine feedbackRoutine;
     private bool revealExpectedWord = true;
+    private bool hintCountdownActive;
+    private float hintRevealTime;
 
     private void Awake()
     {
         recipeRunner ??= FindFirstObjectByType<RecipeRunner>();
+        typingInput ??= recipeRunner != null
+            ? recipeRunner.GetComponent<TypingInput>()
+            : FindFirstObjectByType<TypingInput>();
 
         if (paperWordRenderer == null && wordLabel != null)
         {
             paperWordRenderer = wordLabel.GetComponent<PaperWordRenderer>();
         }
 
-        if (typingInput == null
-            || stateLabel == null
-            || wordLabel == null
-            || feedbackLabel == null)
+        if (typingInput == null)
         {
             Debug.LogError(
-                "WordBubbleUI necesita TypingInput y sus tres textos asignados.",
+                "WordBubbleUI necesita TypingInput para controlar la escritura.",
                 this
             );
         }
@@ -85,6 +88,27 @@ public sealed class WordBubbleUI : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (hintCountdownActive
+            && typingInput != null
+            && typingInput.IsInputEnabled
+            && !typingInput.IsComplete
+            && Time.unscaledTime >= hintRevealTime)
+        {
+            hintCountdownActive = false;
+            revealExpectedWord = true;
+            RefreshWord(typingInput.Progress);
+        }
+
+        if (paperWordRenderer != null && typingInput != null)
+        {
+            paperWordRenderer.SetCaretActive(
+                typingInput.IsInputEnabled && !typingInput.IsComplete
+            );
+        }
+    }
+
     private void OnDisable()
     {
         if (typingInput != null)
@@ -106,6 +130,7 @@ public sealed class WordBubbleUI : MonoBehaviour
         }
 
         StopFeedbackRoutine();
+        hintCountdownActive = false;
     }
 
     public void SetWord(string word, bool enableInput = true)
@@ -117,9 +142,11 @@ public sealed class WordBubbleUI : MonoBehaviour
         }
 
         StopFeedbackRoutine();
-        feedbackLabel.text = string.Empty;
+        ClearFeedbackText();
         SetState(">> ESCRIBE", activeColor);
         typingInput.SetExpectedWord(word, enableInput);
+        revealExpectedWord = true;
+        hintCountdownActive = false;
         RefreshWord(typingInput.Progress);
     }
 
@@ -147,7 +174,7 @@ public sealed class WordBubbleUI : MonoBehaviour
         else if (typingInput != null && !typingInput.IsComplete)
         {
             StopFeedbackRoutine();
-            feedbackLabel.text = string.Empty;
+            ClearFeedbackText();
             SetState(">> ESCRIBE", activeColor);
         }
 
@@ -170,6 +197,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void HandleWordCompleted(string _)
     {
+        hintCountdownActive = false;
         RefreshWord(typingInput.Progress);
         SetState("OK · LISTO", successColor);
         ShowTemporaryFeedback(
@@ -181,10 +209,8 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void HandleRecipeActivated(int recipeIndex, RecipeData _)
     {
-        revealExpectedWord = ShouldRevealExpectedWord(
-            recipeIndex,
-            recipeRunner != null ? recipeRunner.CurrentStep : null
-        );
+        revealExpectedWord = recipeIndex < revealedRecipeCount;
+        hintCountdownActive = false;
         RefreshWord(typingInput != null ? typingInput.Progress : 0);
     }
 
@@ -192,6 +218,8 @@ public sealed class WordBubbleUI : MonoBehaviour
     {
         int recipeIndex = gameFlow != null ? gameFlow.CurrentRecipeIndex : 0;
         revealExpectedWord = ShouldRevealExpectedWord(recipeIndex, step);
+        hintCountdownActive = !revealExpectedWord;
+        hintRevealTime = Time.unscaledTime + hintDelaySeconds;
         RefreshWord(typingInput != null ? typingInput.Progress : 0);
     }
 
@@ -215,12 +243,26 @@ public sealed class WordBubbleUI : MonoBehaviour
             }
         }
 
+        WorldSpriteRecipeBubbleUI[] spriteBubbles =
+            FindObjectsByType<WorldSpriteRecipeBubbleUI>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
+
+        foreach (WorldSpriteRecipeBubbleUI bubble in spriteBubbles)
+        {
+            if (bubble != null && bubble.CanPresentStep(step))
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 
     private void RefreshWord(int progress)
     {
-        if (typingInput == null || wordLabel == null)
+        if (typingInput == null)
         {
             return;
         }
@@ -235,10 +277,23 @@ public sealed class WordBubbleUI : MonoBehaviour
             )
             : typed;
         if (paperWordRenderer != null
-            && paperWordRenderer.RenderWord(paperWord, typingInput.CorrectPrefixLength, typed.Length))
+            && paperWordRenderer.RenderWord(
+                paperWord,
+                typingInput.CorrectPrefixLength,
+                typed.Length
+            ))
+        {
+            paperWordRenderer.SetCaretActive(
+                typingInput.IsInputEnabled && !typingInput.IsComplete
+            );
+            return;
+        }
+
+        if (wordLabel == null)
         {
             return;
         }
+
         string completed = EscapeRichText(displayedWord.Substring(0, safeProgress));
         string typedRemainder = typingInput.HasError
             ? EscapeRichText(typed.Substring(Mathf.Min(safeProgress, typed.Length)))
@@ -293,8 +348,16 @@ public sealed class WordBubbleUI : MonoBehaviour
     private IEnumerator ClearFeedbackAfter(float duration)
     {
         yield return new WaitForSecondsRealtime(duration);
-        feedbackLabel.text = string.Empty;
+        ClearFeedbackText();
         feedbackRoutine = null;
+    }
+
+    private void ClearFeedbackText()
+    {
+        if (feedbackLabel != null)
+        {
+            feedbackLabel.text = string.Empty;
+        }
     }
 
     private void StopFeedbackRoutine()

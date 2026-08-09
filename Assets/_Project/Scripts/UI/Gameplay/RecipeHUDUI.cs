@@ -35,10 +35,8 @@ public sealed class RecipeHUDUI : MonoBehaviour
             || stepsLabel == null
             || pauseHintLabel == null)
         {
-            Debug.LogError(
-                "RecipeHUDUI necesita RecipeRunner y todos sus textos asignados.",
-                this
-            );
+            enabled = false;
+            return;
         }
 
         if (pauseHintLabel != null)

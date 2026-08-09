@@ -181,6 +181,7 @@ MonoBehaviour:
   audioSettings: {fileID: 9104305652353447560}
   bootSceneName: Boot
   firstSceneName: MainMenu
+  bootFadeDuration: 1.1
   targetFrameRate: 60
 --- !u!114 &4526832415601832279
 MonoBehaviour:

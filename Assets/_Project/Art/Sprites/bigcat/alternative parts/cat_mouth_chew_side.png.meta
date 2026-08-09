@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: 6a72bd69eee88164ba66714421724649
+guid: 227919a50f68ec54c9fdda441cb5cb14
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 761100573506273824
-    second: knife_0
+      213: 3901265772167425676
+    second: cat_mouth_chew_side_0
+  - first:
+      213: -8948331521466730204
+    second: cat_mouth_chew_side_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: knife_0
+      name: cat_mouth_chew_side_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1643
-        height: 1516
+        x: 47
+        y: 246
+        width: 486
+        height: 486
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +131,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 022003a60f8ff8a00800000000000000
-      internalID: 761100573506273824
+      spriteID: c8eed6ccc84142630800000000000000
+      internalID: 3901265772167425676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cat_mouth_chew_side_1
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 47
+        width: 482
+        height: 195
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4297b8a34e321d380800000000000000
+      internalID: -8948331521466730204
       vertices: []
       indices: 
       edges: []
@@ -148,7 +173,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      knife_0: 761100573506273824
+      cat_mouth_chew_side_0: 3901265772167425676
+      cat_mouth_chew_side_1: -8948331521466730204
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

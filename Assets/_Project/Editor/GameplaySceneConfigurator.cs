@@ -10,6 +10,38 @@ using UnityEngine.UI;
 public static class GameplaySceneConfigurator
 {
     private const string PlaygroundPath = "Assets/_Project/Scenes/Playground.unity";
+
+    public static void ConfigurePlaygroundAssetBatch()
+    {
+        EditorSceneManager.OpenScene(PlaygroundPath, OpenSceneMode.Single);
+        ConfigurePlayground();
+    }
+
+    [MenuItem("Banquet Chain/Configurar cursores de escritura")]
+    public static void ConfigureTypingCaretsInOpenScene()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        PaperWordRenderer[] renderers = Resources
+            .FindObjectsOfTypeAll<PaperWordRenderer>()
+            .Where(renderer => renderer.gameObject.scene == scene)
+            .ToArray();
+
+        if (renderers.Length == 0)
+        {
+            Debug.LogWarning("La escena abierta no contiene palabras de papel.");
+            return;
+        }
+
+        foreach (PaperWordRenderer renderer in renderers)
+        {
+            ConfigureTypingCaret(renderer);
+        }
+
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log($"Cursores de escritura configurados: {renderers.Length}.");
+    }
+
     [MenuItem("Banquet Chain/Configurar gameplay en escenario")]
     public static void ConfigurePlayground()
     {
@@ -21,11 +53,11 @@ public static class GameplaySceneConfigurator
             return;
         }
 
-        RecipeRunner runner = Object.FindFirstObjectByType<RecipeRunner>();
-        Canvas canvas = Object.FindFirstObjectByType<Canvas>();
-        GameFlow gameFlow = Object.FindFirstObjectByType<GameFlow>();
+        RecipeRunner runner = FindFirstInScene<RecipeRunner>(scene);
+        Canvas canvas = FindFirstInScene<Canvas>(scene);
+        GameFlow gameFlow = FindFirstInScene<GameFlow>(scene);
         KitchenActorCoordinator coordinator =
-            Object.FindFirstObjectByType<KitchenActorCoordinator>();
+            FindFirstInScene<KitchenActorCoordinator>(scene);
 
         if (runner == null || canvas == null || gameFlow == null)
         {
@@ -69,19 +101,20 @@ public static class GameplaySceneConfigurator
         SetFloat(gameFlow, "finalEatingDuration", 1.2f);
         SetFloat(gameFlow, "finalSleepingDuration", 1.5f);
 
-        WordBubbleUI wordBubble = Object.FindFirstObjectByType<WordBubbleUI>();
+        WordBubbleUI wordBubble = FindFirstInScene<WordBubbleUI>(scene);
         if (wordBubble != null)
         {
+            SetObjectReference(wordBubble, "recipeRunner", runner);
             SetObjectReference(wordBubble, "gameFlow", gameFlow);
             SetString(wordBubble, "initialWord", string.Empty);
             SetInteger(wordBubble, "revealedRecipeCount", 1);
         }
 
-        RecipeHUDUI recipeHud = Object.FindFirstObjectByType<RecipeHUDUI>();
-        if (recipeHud != null)
+        foreach (PaperWordRenderer renderer in Resources
+            .FindObjectsOfTypeAll<PaperWordRenderer>()
+            .Where(renderer => renderer.gameObject.scene == scene))
         {
-            SetObjectReference(recipeHud, "gameFlow", gameFlow);
-            SetInteger(recipeHud, "detailedRecipeCount", 1);
+            ConfigureTypingCaret(renderer);
         }
 
         if (coordinator != null)
@@ -104,6 +137,42 @@ public static class GameplaySceneConfigurator
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
         Debug.Log("Playground configurado: chefs, burbujas y gato viven en la escena.");
+    }
+
+    private static void ConfigureTypingCaret(PaperWordRenderer renderer)
+    {
+        Transform existing = renderer.transform.Find("TypingCaret");
+        GameObject caretObject;
+
+        if (existing == null)
+        {
+            caretObject = new GameObject(
+                "TypingCaret",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image)
+            );
+            caretObject.transform.SetParent(renderer.transform, false);
+        }
+        else
+        {
+            caretObject = existing.gameObject;
+        }
+
+        caretObject.layer = renderer.gameObject.layer;
+        RectTransform rect = caretObject.GetComponent<RectTransform>();
+        rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = Vector2.zero;
+
+        Image image = GetOrAdd<Image>(caretObject);
+        image.color = new Color(0.22f, 0.17f, 0.12f, 1f);
+        image.raycastTarget = false;
+        image.enabled = false;
+
+        renderer.ConfigureCaret(rect, image);
+        EditorUtility.SetDirty(renderer);
+        EditorUtility.SetDirty(caretObject);
     }
 
     private static KitchenActor RequireWorldActor(
@@ -144,6 +213,16 @@ public static class GameplaySceneConfigurator
         GameObject panel = FindSceneObject(panelName);
 
         if (actor == null)
+        {
+            return;
+        }
+
+        if (ConfigureWorldSpriteBubble(
+            actor.transform,
+            runner,
+            WorldRecipeBubbleMode.ActorStep,
+            actorId
+        ))
         {
             return;
         }
@@ -207,6 +286,16 @@ public static class GameplaySceneConfigurator
     )
     {
         if (bigCat == null)
+        {
+            return;
+        }
+
+        if (ConfigureWorldSpriteBubble(
+            bigCat,
+            runner,
+            WorldRecipeBubbleMode.CatRequest,
+            string.Empty
+        ))
         {
             return;
         }
@@ -335,9 +424,83 @@ public static class GameplaySceneConfigurator
         return image;
     }
 
+    private static bool ConfigureWorldSpriteBubble(
+        Transform actorRoot,
+        RecipeRunner runner,
+        WorldRecipeBubbleMode mode,
+        string actorId
+    )
+    {
+        Transform bubbleRoot = FindDescendant(actorRoot, "IconBubble");
+
+        if (bubbleRoot == null)
+        {
+            return false;
+        }
+
+        Transform iconTransform = FindDescendant(bubbleRoot, "Icon");
+
+        if (iconTransform == null)
+        {
+            GameObject iconObject = new("Icon");
+            iconTransform = iconObject.transform;
+            iconTransform.SetParent(bubbleRoot, false);
+        }
+
+        SpriteRenderer background = bubbleRoot.GetComponent<SpriteRenderer>();
+        SpriteRenderer icon = GetOrAdd<SpriteRenderer>(iconTransform.gameObject);
+        iconTransform.localPosition = Vector3.zero;
+        iconTransform.localRotation = Quaternion.identity;
+        iconTransform.localScale = Vector3.one;
+        icon.gameObject.layer = bubbleRoot.gameObject.layer;
+        icon.color = Color.white;
+
+        if (background != null)
+        {
+            icon.sortingLayerID = background.sortingLayerID;
+            icon.sortingOrder = background.sortingOrder + 1;
+        }
+
+        WorldSpriteRecipeBubbleUI bubble =
+            GetOrAdd<WorldSpriteRecipeBubbleUI>(bubbleRoot.gameObject);
+        bubble.Configure(
+            runner,
+            mode,
+            actorId,
+            icon,
+            bubbleRoot.GetComponentsInChildren<SpriteRenderer>(true)
+        );
+        EditorUtility.SetDirty(bubbleRoot.gameObject);
+        EditorUtility.SetDirty(iconTransform.gameObject);
+        return true;
+    }
+
+    private static Transform FindDescendant(Transform root, string objectName)
+    {
+        if (root == null)
+        {
+            return null;
+        }
+
+        return root.GetComponentsInChildren<Transform>(true)
+            .FirstOrDefault(candidate => string.Equals(
+                candidate.name,
+                objectName,
+                System.StringComparison.OrdinalIgnoreCase
+            ));
+    }
+
     private static T GetOrAdd<T>(GameObject target) where T : Component
     {
         return target.GetComponent<T>() ?? target.AddComponent<T>();
+    }
+
+    private static T FindFirstInScene<T>(Scene scene) where T : Component
+    {
+        return Resources.FindObjectsOfTypeAll<T>()
+            .FirstOrDefault(candidate =>
+                candidate != null && candidate.gameObject.scene == scene
+            );
     }
 
     private static GameObject FindSceneObject(string objectName)

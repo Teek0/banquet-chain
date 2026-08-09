@@ -14,6 +14,7 @@ public sealed class AppRoot : MonoBehaviour
     [Header("Arranque")]
     [SerializeField] private string bootSceneName = "Boot";
     [SerializeField] private string firstSceneName = "MainMenu";
+    [SerializeField, Min(0f)] private float bootFadeDuration = 1.1f;
     [SerializeField] private int targetFrameRate = 60;
 
     public SceneLoader SceneLoader => sceneLoader;
@@ -57,7 +58,7 @@ public sealed class AppRoot : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == bootSceneName)
         {
-            sceneLoader.LoadScene(firstSceneName);
+            sceneLoader.LoadScene(firstSceneName, bootFadeDuration);
             return;
         }
 

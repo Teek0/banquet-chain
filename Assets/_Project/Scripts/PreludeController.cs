@@ -60,6 +60,8 @@ public sealed class PreludeController : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (tutorialWordRenderer != null)
+            tutorialWordRenderer.SetCaretActive(false);
         if (typingInput == null) return;
         typingInput.ProgressChanged -= HandleTypingProgress;
         typingInput.WordCompleted -= HandleWordCompleted;
@@ -67,6 +69,12 @@ public sealed class PreludeController : MonoBehaviour
 
     private void Update()
     {
+        if (tutorialWordRenderer != null && typingInput != null)
+            tutorialWordRenderer.SetCaretActive(
+                !transitioning
+                && typingInput.IsInputEnabled
+                && !typingInput.IsComplete
+            );
         if (transitioning) return;
         elapsed += Time.unscaledDeltaTime;
         bool advancePressed = Keyboard.current != null &&

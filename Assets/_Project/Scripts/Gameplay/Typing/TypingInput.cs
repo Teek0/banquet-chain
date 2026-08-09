@@ -13,6 +13,7 @@ public sealed class TypingInput : MonoBehaviour
     private Keyboard keyboard;
     private float nextBackspaceRepeat;
     private bool backspaceWasDown;
+    private bool backspaceTextRequested;
 
     [SerializeField, Min(0f)] private float backspaceRepeatDelay = 0.35f;
     [SerializeField, Min(0.01f)] private float backspaceRepeatInterval = 0.06f;
@@ -51,6 +52,7 @@ public sealed class TypingInput : MonoBehaviour
         }
 
         keyboard = null;
+        ResetBackspaceTracking();
     }
 
     private void Update()
@@ -59,13 +61,17 @@ public sealed class TypingInput : MonoBehaviour
 
         if (Keyboard.current == null || !IsInputEnabled)
         {
+            ResetBackspaceTracking();
             return;
         }
 
         bool backspaceDown = Keyboard.current.backspaceKey.isPressed;
-        bool backspaceStarted = backspaceDown && !backspaceWasDown;
+        bool backspaceStarted =
+            (backspaceDown && !backspaceWasDown)
+            || Keyboard.current.backspaceKey.wasPressedThisFrame
+            || (backspaceTextRequested && !backspaceWasDown);
 
-        if (backspaceStarted || Keyboard.current.backspaceKey.wasPressedThisFrame)
+        if (backspaceStarted)
         {
             ProcessBackspace();
             nextBackspaceRepeat = Time.unscaledTime + backspaceRepeatDelay;
@@ -77,7 +83,8 @@ public sealed class TypingInput : MonoBehaviour
             nextBackspaceRepeat = Time.unscaledTime + backspaceRepeatInterval;
         }
 
-        backspaceWasDown = backspaceDown;
+        backspaceWasDown = backspaceDown || backspaceTextRequested;
+        backspaceTextRequested = false;
     }
 
     private void RefreshKeyboardSubscription()
@@ -213,7 +220,20 @@ public sealed class TypingInput : MonoBehaviour
 
     private void HandleTextInput(char character)
     {
+        if (character == '\b' || character == '\u007f')
+        {
+            backspaceTextRequested = true;
+            return;
+        }
+
         ProcessCharacter(character);
+    }
+
+    private void ResetBackspaceTracking()
+    {
+        backspaceWasDown = false;
+        backspaceTextRequested = false;
+        nextBackspaceRepeat = 0f;
     }
 
     private void RecalculateProgress()

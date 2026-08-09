@@ -12,6 +12,11 @@ public sealed class SceneLoader : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
+        LoadScene(sceneName, fadeDuration);
+    }
+
+    public void LoadScene(string sceneName, float transitionDuration)
+    {
         if (IsLoading)
         {
             return;
@@ -31,7 +36,9 @@ public sealed class SceneLoader : MonoBehaviour
             return;
         }
 
-        StartCoroutine(LoadSceneRoutine(sceneName));
+        StartCoroutine(
+            LoadSceneRoutine(sceneName, Mathf.Max(0f, transitionDuration))
+        );
     }
 
     public void ReloadCurrentScene()
@@ -47,14 +54,17 @@ public sealed class SceneLoader : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadSceneRoutine(string sceneName)
+    private IEnumerator LoadSceneRoutine(
+        string sceneName,
+        float transitionDuration
+    )
     {
         IsLoading = true;
         Time.timeScale = 1f;
 
         if (screenFader != null)
         {
-            yield return screenFader.FadeTo(1f, fadeDuration);
+            yield return screenFader.FadeTo(1f, transitionDuration);
         }
 
         AsyncOperation loading = SceneManager.LoadSceneAsync(sceneName);
@@ -66,7 +76,7 @@ public sealed class SceneLoader : MonoBehaviour
 
         if (screenFader != null)
         {
-            yield return screenFader.FadeTo(0f, fadeDuration);
+            yield return screenFader.FadeTo(0f, transitionDuration);
         }
 
         IsLoading = false;
