@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public enum GameFlowState
@@ -26,7 +25,7 @@ public sealed class GameFlow : MonoBehaviour
     [SerializeField] private bool playOnStart = true;
 
     [Header("Timing")]
-    [SerializeField, Min(0f)] private float dishCelebrationDuration = 1.2f;
+    [SerializeField, Min(0f)] private float dishCelebrationDuration = 1.8f;
     [SerializeField, Min(0f)] private float interRecipeDelay = 0.45f;
     [SerializeField, Min(0f)] private float finalEatingDuration = 1.2f;
     [SerializeField, Min(0f)] private float finalCelebrationDuration = 3f;
@@ -35,10 +34,7 @@ public sealed class GameFlow : MonoBehaviour
 
     [Header("Final")]
     [SerializeField] private CanvasGroup finalOverlay;
-    [SerializeField] private TMP_Text finalLabel;
     [SerializeField] private bool loadCreditsOnComplete = true;
-    [SerializeField, TextArea(2, 4)] private string finalMessage =
-        "EL BANQUETE ESTÁ COMPLETO\nEl ronroneo vuelve a proteger al pueblo.";
 
     private Coroutine transitionRoutine;
     private int runVersion;
@@ -197,6 +193,7 @@ public sealed class GameFlow : MonoBehaviour
         CompletedDishes = completedIndex + 1;
         bool isFinalDish = completedIndex >= recipes.Count - 1;
         catController?.RegisterServedDish(CompletedDishes, isFinalDish);
+        catController?.PlayDishCelebration(dishCelebrationDuration);
         DishCompleted?.Invoke(completedIndex, recipe);
         yield return WaitForDuration(dishCelebrationDuration);
 
@@ -328,11 +325,6 @@ public sealed class GameFlow : MonoBehaviour
 
     private void ShowFinalOverlay()
     {
-        if (finalLabel != null)
-        {
-            finalLabel.text = finalMessage;
-        }
-
         if (finalOverlay != null)
         {
             finalOverlay.alpha = 1f;

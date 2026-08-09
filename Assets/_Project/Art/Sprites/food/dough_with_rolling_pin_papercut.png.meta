@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: 5d6154ac89dc10646914e2d1fe0ee628
+guid: 8cc118a3153cd704591df6cc2b8d92b0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8507988958172265746
-    second: cat_mouth_open_0
+      213: -4968706804584702455
+    second: dough_with_rolling_pin_papercut_0
   - first:
-      213: -225804441894366135
-    second: cat_mouth_open_1
+      213: -4779630461505474824
+    second: dough_with_rolling_pin_papercut_1
+  - first:
+      213: 229931536071918547
+    second: dough_with_rolling_pin_papercut_2
+  - first:
+      213: 7329563671134599455
+    second: dough_with_rolling_pin_papercut_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +55,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -116,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cat_mouth_open_0
+      name: dough_with_rolling_pin_papercut_0
       rect:
         serializedVersion: 2
-        x: 122
-        y: 320
-        width: 201
-        height: 144
+        x: 54
+        y: 417
+        width: 58
+        height: 59
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ee2423bae1d8de980800000000000000
-      internalID: -8507988958172265746
+      spriteID: 90e99af8c7b9b0bb0800000000000000
+      internalID: -4968706804584702455
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: cat_mouth_open_1
+      name: dough_with_rolling_pin_papercut_1
       rect:
         serializedVersion: 2
-        x: 23
-        y: 23
-        width: 399
-        height: 288
+        x: 106
+        y: 258
+        width: 788
+        height: 807
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +159,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9445e247e08cddcf0800000000000000
-      internalID: -225804441894366135
+      spriteID: 8fe64583b675badb0800000000000000
+      internalID: -4779630461505474824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dough_with_rolling_pin_papercut_2
+      rect:
+        serializedVersion: 2
+        x: 705
+        y: 166
+        width: 498
+        height: 765
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d30a3a8381e03300800000000000000
+      internalID: 229931536071918547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dough_with_rolling_pin_papercut_3
+      rect:
+        serializedVersion: 2
+        x: 595
+        y: 225
+        width: 66
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f19f5904357d7b560800000000000000
+      internalID: 7329563671134599455
       vertices: []
       indices: 
       edges: []
@@ -163,7 +213,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -173,8 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cat_mouth_open_0: -8507988958172265746
-      cat_mouth_open_1: -225804441894366135
+      dough_with_rolling_pin_papercut_0: -4968706804584702455
+      dough_with_rolling_pin_papercut_1: -4779630461505474824
+      dough_with_rolling_pin_papercut_2: 229931536071918547
+      dough_with_rolling_pin_papercut_3: 7329563671134599455
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

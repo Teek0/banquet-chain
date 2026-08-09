@@ -26,6 +26,10 @@ public sealed class CatController : MonoBehaviour
     [SerializeField] private TMP_Text stateLabel;
     [SerializeField] private TMP_Text requestLabel;
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject[] defaultExpressionParts =
+        System.Array.Empty<GameObject>();
+    [SerializeField] private GameObject[] happyExpressionParts =
+        System.Array.Empty<GameObject>();
     [SerializeField] private string visualStateParameter = "VisualState";
     [SerializeField] private Color hungryColor = new(0.43f, 0.34f, 0.48f, 1f);
     [SerializeField] private Color requestingColor = new(0.78f, 0.48f, 0.22f, 1f);
@@ -37,6 +41,7 @@ public sealed class CatController : MonoBehaviour
     [SerializeField, Min(0f)] private float transitionSpeed = 14f;
     [SerializeField, Min(0f)] private float receivingBounceHeight = 0.45f;
     [SerializeField, Min(0f)] private float satisfiedBounceHeight = 0.3f;
+    [SerializeField, Min(0f)] private float sleepingCrossfadeDuration = 1.5f;
 
     private Vector3 baseLocalPosition;
     private Vector3 baseLocalScale;
@@ -45,6 +50,19 @@ public sealed class CatController : MonoBehaviour
     private bool isSubscribed;
     private float receivingTimeRemaining;
     private float animationClock;
+    private float dishCelebrationTimeRemaining;
+    private float sleepingCrossfadeElapsed;
+    private bool sleepingCrossfadeActive;
+    private SpriteRenderer[] awakeSpriteRenderers =
+        System.Array.Empty<SpriteRenderer>();
+    private SpriteRenderer[] sleepingSpriteRenderers =
+        System.Array.Empty<SpriteRenderer>();
+    private Graphic[] awakeGraphics = System.Array.Empty<Graphic>();
+    private Graphic[] sleepingGraphics = System.Array.Empty<Graphic>();
+    private float[] awakeSpriteAlphas = System.Array.Empty<float>();
+    private float[] sleepingSpriteAlphas = System.Array.Empty<float>();
+    private float[] awakeGraphicAlphas = System.Array.Empty<float>();
+    private float[] sleepingGraphicAlphas = System.Array.Empty<float>();
     private CatVisualState afterReceivingState = CatVisualState.Relaxed;
     private CatVisualState renderedState = (CatVisualState)(-1);
 
@@ -56,12 +74,14 @@ public sealed class CatController : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+        CacheCrossfadeTargets();
         CaptureBaseTransform();
     }
 
     private void OnEnable()
     {
         ResolveReferences();
+        CacheCrossfadeTargets();
         CaptureBaseTransform();
         Subscribe();
         ApplyVisuals(0f, true);
@@ -83,8 +103,10 @@ public sealed class CatController : MonoBehaviour
         Satisfaction = 0;
         CurrentRequest = string.Empty;
         receivingTimeRemaining = 0f;
+        dishCelebrationTimeRemaining = 0f;
         afterReceivingState = CatVisualState.Relaxed;
         animationClock = 0f;
+        CancelSleepingCrossfade();
         State = CatVisualState.Hungry;
         RefreshLabels(true);
         ApplyVisuals(0f, true);
@@ -94,8 +116,15 @@ public sealed class CatController : MonoBehaviour
     {
         CurrentRequest = recipe?.CatOrder ?? string.Empty;
         receivingTimeRemaining = 0f;
+        dishCelebrationTimeRemaining = 0f;
         State = CatVisualState.Requesting;
         RefreshLabels(true);
+    }
+
+    public void PlayDishCelebration(float duration)
+    {
+        dishCelebrationTimeRemaining = Mathf.Max(0.05f, duration);
+        RefreshExpression();
     }
 
     public void SetWaitingForKitchen()
@@ -112,6 +141,7 @@ public sealed class CatController : MonoBehaviour
 
     public void PlayReceiving()
     {
+        dishCelebrationTimeRemaining = 0f;
         receivingTimeRemaining = Mathf.Max(0.05f, receivingDuration);
         afterReceivingState = Satisfaction >= 3
             ? CatVisualState.Satisfied
@@ -149,15 +179,26 @@ public sealed class CatController : MonoBehaviour
     {
         Satisfaction = 3;
         receivingTimeRemaining = 0f;
+        dishCelebrationTimeRemaining = 0f;
+        BeginSleepingCrossfade();
         State = CatVisualState.Sleeping;
         RefreshLabels(true);
-        ApplyVisuals(0f, true);
+        ApplyVisuals(0f, false);
     }
 
     public void AdvanceVisual(float deltaTime)
     {
         float safeDeltaTime = Mathf.Max(0f, deltaTime);
         animationClock += safeDeltaTime;
+
+        if (dishCelebrationTimeRemaining > 0f)
+        {
+            dishCelebrationTimeRemaining = Mathf.Max(
+                0f,
+                dishCelebrationTimeRemaining - safeDeltaTime
+            );
+            RefreshExpression();
+        }
 
         if (State == CatVisualState.Receiving)
         {
@@ -291,6 +332,7 @@ public sealed class CatController : MonoBehaviour
                 : CurrentRequest;
         }
 
+        RefreshExpression();
         SetAnimatorState();
         renderedState = State;
     }
@@ -299,18 +341,6 @@ public sealed class CatController : MonoBehaviour
     {
         bool isSleeping = State == CatVisualState.Sleeping;
 
-        if (awakeVisual != null && awakeVisual != gameObject
-            && awakeVisual.activeSelf == isSleeping)
-        {
-            awakeVisual.SetActive(!isSleeping);
-        }
-
-        if (sleepingVisual != null && sleepingVisual != gameObject
-            && sleepingVisual.activeSelf != isSleeping)
-        {
-            sleepingVisual.SetActive(isSleeping);
-        }
-
         if (renderedState != State)
         {
             SetAnimatorState();
@@ -318,8 +348,11 @@ public sealed class CatController : MonoBehaviour
 
         if (isSleeping)
         {
+            AdvanceSleepingCrossfade(deltaTime);
             return;
         }
+
+        EnsureAwakeVisual();
 
         if (!hasCapturedBaseTransform || visualRoot == null)
         {
@@ -412,6 +445,220 @@ public sealed class CatController : MonoBehaviour
                 animator.SetInteger(visualStateParameter, (int)State);
                 return;
             }
+        }
+    }
+
+    private void SetHappyExpression(bool happy)
+    {
+        SetExpressionPartsActive(defaultExpressionParts, !happy);
+        SetExpressionPartsActive(happyExpressionParts, happy);
+    }
+
+    private void RefreshExpression()
+    {
+        SetHappyExpression(
+            State == CatVisualState.Satisfied
+            || dishCelebrationTimeRemaining > 0f
+        );
+    }
+
+    private static void SetExpressionPartsActive(
+        GameObject[] parts,
+        bool active
+    )
+    {
+        if (parts == null)
+        {
+            return;
+        }
+
+        foreach (GameObject part in parts)
+        {
+            if (part != null && part.activeSelf != active)
+            {
+                part.SetActive(active);
+            }
+        }
+    }
+
+    private void CacheCrossfadeTargets()
+    {
+        if (awakeVisual != null && awakeSpriteRenderers.Length == 0
+            && awakeGraphics.Length == 0)
+        {
+            awakeSpriteRenderers =
+                awakeVisual.GetComponentsInChildren<SpriteRenderer>(true);
+            awakeGraphics = awakeVisual.GetComponentsInChildren<Graphic>(true);
+            awakeSpriteAlphas = CaptureAlphas(awakeSpriteRenderers);
+            awakeGraphicAlphas = CaptureAlphas(awakeGraphics);
+        }
+
+        if (sleepingVisual != null && sleepingSpriteRenderers.Length == 0
+            && sleepingGraphics.Length == 0)
+        {
+            sleepingSpriteRenderers =
+                sleepingVisual.GetComponentsInChildren<SpriteRenderer>(true);
+            sleepingGraphics =
+                sleepingVisual.GetComponentsInChildren<Graphic>(true);
+            sleepingSpriteAlphas = CaptureAlphas(sleepingSpriteRenderers);
+            sleepingGraphicAlphas = CaptureAlphas(sleepingGraphics);
+        }
+    }
+
+    private void BeginSleepingCrossfade()
+    {
+        CacheCrossfadeTargets();
+        sleepingCrossfadeElapsed = 0f;
+        sleepingCrossfadeActive = sleepingCrossfadeDuration > 0f
+            && awakeVisual != null
+            && sleepingVisual != null;
+
+        SetVisualActive(awakeVisual, true);
+        SetVisualActive(sleepingVisual, true);
+        SetAwakeAlpha(1f);
+        SetSleepingAlpha(sleepingCrossfadeActive ? 0f : 1f);
+
+        if (!sleepingCrossfadeActive)
+        {
+            SetVisualActive(awakeVisual, false);
+        }
+    }
+
+    private void AdvanceSleepingCrossfade(float deltaTime)
+    {
+        if (!sleepingCrossfadeActive)
+        {
+            SetVisualActive(awakeVisual, false);
+            SetVisualActive(sleepingVisual, true);
+            SetSleepingAlpha(1f);
+            return;
+        }
+
+        sleepingCrossfadeElapsed += Mathf.Max(0f, deltaTime);
+        float progress = Mathf.Clamp01(
+            sleepingCrossfadeElapsed / Mathf.Max(0.001f, sleepingCrossfadeDuration)
+        );
+        float easedProgress = Mathf.SmoothStep(0f, 1f, progress);
+        SetAwakeAlpha(1f - easedProgress);
+        SetSleepingAlpha(easedProgress);
+
+        if (progress < 1f)
+        {
+            return;
+        }
+
+        sleepingCrossfadeActive = false;
+        SetVisualActive(awakeVisual, false);
+        SetAwakeAlpha(1f);
+        SetSleepingAlpha(1f);
+    }
+
+    private void CancelSleepingCrossfade()
+    {
+        sleepingCrossfadeActive = false;
+        sleepingCrossfadeElapsed = 0f;
+        SetAwakeAlpha(1f);
+        SetSleepingAlpha(1f);
+        SetVisualActive(awakeVisual, true);
+        SetVisualActive(sleepingVisual, false);
+    }
+
+    private void EnsureAwakeVisual()
+    {
+        if (!sleepingCrossfadeActive
+            && (awakeVisual == null || awakeVisual.activeSelf)
+            && (sleepingVisual == null || !sleepingVisual.activeSelf))
+        {
+            return;
+        }
+
+        CancelSleepingCrossfade();
+    }
+
+    private void SetAwakeAlpha(float multiplier)
+    {
+        SetAlpha(awakeSpriteRenderers, awakeSpriteAlphas, multiplier);
+        SetAlpha(awakeGraphics, awakeGraphicAlphas, multiplier);
+    }
+
+    private void SetSleepingAlpha(float multiplier)
+    {
+        SetAlpha(sleepingSpriteRenderers, sleepingSpriteAlphas, multiplier);
+        SetAlpha(sleepingGraphics, sleepingGraphicAlphas, multiplier);
+    }
+
+    private static float[] CaptureAlphas(SpriteRenderer[] renderers)
+    {
+        float[] alphas = new float[renderers.Length];
+        for (int index = 0; index < renderers.Length; index++)
+        {
+            alphas[index] = renderers[index] != null
+                ? renderers[index].color.a
+                : 1f;
+        }
+
+        return alphas;
+    }
+
+    private static float[] CaptureAlphas(Graphic[] graphics)
+    {
+        float[] alphas = new float[graphics.Length];
+        for (int index = 0; index < graphics.Length; index++)
+        {
+            alphas[index] = graphics[index] != null
+                ? graphics[index].color.a
+                : 1f;
+        }
+
+        return alphas;
+    }
+
+    private static void SetAlpha(
+        SpriteRenderer[] renderers,
+        float[] baseAlphas,
+        float multiplier
+    )
+    {
+        for (int index = 0; index < renderers.Length; index++)
+        {
+            SpriteRenderer renderer = renderers[index];
+            if (renderer == null)
+            {
+                continue;
+            }
+
+            Color color = renderer.color;
+            color.a = baseAlphas[index] * Mathf.Clamp01(multiplier);
+            renderer.color = color;
+        }
+    }
+
+    private static void SetAlpha(
+        Graphic[] graphics,
+        float[] baseAlphas,
+        float multiplier
+    )
+    {
+        for (int index = 0; index < graphics.Length; index++)
+        {
+            Graphic graphic = graphics[index];
+            if (graphic == null)
+            {
+                continue;
+            }
+
+            Color color = graphic.color;
+            color.a = baseAlphas[index] * Mathf.Clamp01(multiplier);
+            graphic.color = color;
+        }
+    }
+
+    private void SetVisualActive(GameObject visual, bool active)
+    {
+        if (visual != null && visual != gameObject
+            && visual.activeSelf != active)
+        {
+            visual.SetActive(active);
         }
     }
 }

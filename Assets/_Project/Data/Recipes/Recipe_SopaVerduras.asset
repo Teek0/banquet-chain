@@ -36,8 +36,8 @@ MonoBehaviour:
     transformsDish: 1
   - expectedWord: agua
     icon: {fileID: -868945178380921472, guid: 7dc8955cd5645fc43b38d90bdc147b92, type: 3}
-    actorId: despensa
-    reactionType: 0
+    actorId: horno
+    reactionType: 2
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: hervir

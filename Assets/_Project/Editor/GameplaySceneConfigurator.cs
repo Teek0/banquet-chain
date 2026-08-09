@@ -200,7 +200,46 @@ public static class GameplaySceneConfigurator
         actor.ConfigureIdentity(actorId, displayName);
         SetInteger(actor, "presentationPriority", 10);
         SetFloat(actor, "motionDistance", 0.12f);
+        SetFloat(actor, "celebrationDuration", 1.8f);
+        ConfigureActorFaces(actor);
         return actor;
+    }
+
+    private static void ConfigureActorFaces(KitchenActor actor)
+    {
+        Transform[] descendants = actor.GetComponentsInChildren<Transform>(true);
+        GameObject[] defaultFaces = descendants
+            .Where(item => item.name == "DefaultFace")
+            .Select(item => item.gameObject)
+            .ToArray();
+        GameObject[] happyFaces = descendants
+            .Where(item => item.name == "HappyFace")
+            .Select(item => item.gameObject)
+            .ToArray();
+
+        SerializedObject serializedActor = new(actor);
+        SetObjectArray(
+            serializedActor.FindProperty("defaultFaces"),
+            defaultFaces
+        );
+        SetObjectArray(
+            serializedActor.FindProperty("happyFaces"),
+            happyFaces
+        );
+        serializedActor.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void SetObjectArray(
+        SerializedProperty property,
+        GameObject[] values
+    )
+    {
+        property.arraySize = values.Length;
+        for (int index = 0; index < values.Length; index++)
+        {
+            property.GetArrayElementAtIndex(index).objectReferenceValue =
+                values[index];
+        }
     }
 
     private static void ConfigureActorBubble(
@@ -385,6 +424,28 @@ public static class GameplaySceneConfigurator
         serialized.FindProperty("sleepingVisual").objectReferenceValue = sleepingCat;
         serialized.FindProperty("animator").objectReferenceValue =
             bigCat.GetComponentInChildren<Animator>(true);
+        GameObject[] defaultExpressionParts = bigCat
+            .GetComponentsInChildren<Transform>(true)
+            .Where(item => item.name == "DefaultLeftEye"
+                || item.name == "DefaultRightEye"
+                || item.name == "DefaultMouth")
+            .Select(item => item.gameObject)
+            .ToArray();
+        GameObject[] happyExpressionParts = bigCat
+            .GetComponentsInChildren<Transform>(true)
+            .Where(item => item.name == "HappyLeftEye"
+                || item.name == "HappyRightEye"
+                || item.name == "HappyMouth")
+            .Select(item => item.gameObject)
+            .ToArray();
+        SetObjectArray(
+            serialized.FindProperty("defaultExpressionParts"),
+            defaultExpressionParts
+        );
+        SetObjectArray(
+            serialized.FindProperty("happyExpressionParts"),
+            happyExpressionParts
+        );
         serialized.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(host);
         return controller;

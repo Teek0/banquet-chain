@@ -52,10 +52,10 @@ MonoBehaviour:
     reactionType: 2
     durationBeforeNextStep: 0.4
     transformsDish: 1
-  - expectedWord: masa
-    icon: {fileID: -4971564594829922754, guid: cd2bc83a03ae48f4599607a2283c55b1, type: 3}
-    actorId: despensa
-    reactionType: 0
+  - expectedWord: amasar
+    icon: {fileID: -4968706804584702455, guid: 8cc118a3153cd704591df6cc2b8d92b0, type: 3}
+    actorId: servicio
+    reactionType: 1
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: frutas

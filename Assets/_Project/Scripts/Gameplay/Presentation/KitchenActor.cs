@@ -21,6 +21,10 @@ public sealed class KitchenActor : MonoBehaviour
     [SerializeField] private Transform visualRoot;
     [SerializeField] private Graphic bodyGraphic;
     [SerializeField] private TMP_Text nameLabel;
+    [SerializeField] private GameObject[] defaultFaces =
+        System.Array.Empty<GameObject>();
+    [SerializeField] private GameObject[] happyFaces =
+        System.Array.Empty<GameObject>();
     [SerializeField] private SpriteRenderer[] spriteRenderers = System.Array.Empty<SpriteRenderer>();
     [SerializeField] private Animator animator;
     [SerializeField] private bool tintWorldSprites;
@@ -33,7 +37,7 @@ public sealed class KitchenActor : MonoBehaviour
 
     [Header("Reaction Timing")]
     [SerializeField, Min(0.05f)] private float actionDuration = 0.42f;
-    [SerializeField, Min(0.05f)] private float celebrationDuration = 1.05f;
+    [SerializeField, Min(0.05f)] private float celebrationDuration = 1.8f;
     [SerializeField, Min(0f)] private float transitionSpeed = 18f;
     [SerializeField, Min(0f)] private float motionDistance = 12f;
 
@@ -202,6 +206,38 @@ public sealed class KitchenActor : MonoBehaviour
         {
             animator = visualRoot.GetComponentInChildren<Animator>(true);
         }
+
+        if (defaultFaces == null || defaultFaces.Length == 0)
+        {
+            defaultFaces = FindFaceObjects("DefaultFace");
+        }
+
+        if (happyFaces == null || happyFaces.Length == 0)
+        {
+            happyFaces = FindFaceObjects("HappyFace");
+        }
+    }
+
+    private GameObject[] FindFaceObjects(string objectName)
+    {
+        if (visualRoot == null)
+        {
+            return System.Array.Empty<GameObject>();
+        }
+
+        Transform[] descendants =
+            visualRoot.GetComponentsInChildren<Transform>(true);
+        System.Collections.Generic.List<GameObject> matches = new();
+
+        foreach (Transform descendant in descendants)
+        {
+            if (descendant != null && descendant.name == objectName)
+            {
+                matches.Add(descendant.gameObject);
+            }
+        }
+
+        return matches.ToArray();
     }
 
     private void CaptureBaseTransform()
@@ -306,11 +342,39 @@ public sealed class KitchenActor : MonoBehaviour
 
         if (state != lastRenderedState)
         {
+            SetCelebrationFace(
+                state == KitchenActorVisualState.Celebrating
+            );
             SetAnimatorInteger(visualStateParameter, (int)state);
             SetAnimatorInteger(reactionTypeParameter, (int)lastReactionType);
         }
 
         lastRenderedState = state;
+    }
+
+    private void SetCelebrationFace(bool celebrating)
+    {
+        SetFaceGroupActive(defaultFaces, !celebrating);
+        SetFaceGroupActive(happyFaces, celebrating);
+    }
+
+    private static void SetFaceGroupActive(
+        GameObject[] faces,
+        bool active
+    )
+    {
+        if (faces == null)
+        {
+            return;
+        }
+
+        foreach (GameObject face in faces)
+        {
+            if (face != null && face.activeSelf != active)
+            {
+                face.SetActive(active);
+            }
+        }
     }
 
     private Color GetDesiredColor(KitchenActorVisualState state)
