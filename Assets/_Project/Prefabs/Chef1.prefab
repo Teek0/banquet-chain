@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 740584532782684733}
+  - component: {fileID: 901000000000000001}
   m_Layer: 8
   m_Name: Chef1
   m_TagString: Untagged
@@ -38,6 +39,36 @@ Transform:
   - {fileID: 5580097118020551410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &901000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181516147860806220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6218908f07ba44ba8fc15f798925721a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: BanquetChain.Presentation::KitchenActor
+  actorId: despensa
+  displayName: CHEF 1
+  visualRoot: {fileID: 740584532782684733}
+  bodyGraphic: {fileID: 0}
+  nameLabel: {fileID: 0}
+  spriteRenderers: []
+  animator: {fileID: 0}
+  tintWorldSprites: 0
+  presentationPriority: 10
+  visualStateParameter: VisualState
+  reactionTypeParameter: ReactionType
+  idleColor: {r: 1, g: 1, b: 1, a: 1}
+  targetColor: {r: 1, g: 0.85, b: 0.5, a: 1}
+  celebrationColor: {r: 0.75, g: 1, b: 0.75, a: 1}
+  actionDuration: 0.42
+  celebrationDuration: 1.05
+  transitionSpeed: 18
+  motionDistance: 0.12
 --- !u!1 &1141744505312373639
 GameObject:
   m_ObjectHideFlags: 0

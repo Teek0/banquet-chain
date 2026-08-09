@@ -11,7 +11,9 @@ public enum GameFlowState
     PlayingRecipe,
     CelebratingDish,
     TransitioningRecipe,
+    FinalEating,
     FinalCelebration,
+    FinalSleeping,
     Completed
 }
 
@@ -26,7 +28,9 @@ public sealed class GameFlow : MonoBehaviour
     [Header("Timing")]
     [SerializeField, Min(0f)] private float dishCelebrationDuration = 1.2f;
     [SerializeField, Min(0f)] private float interRecipeDelay = 0.45f;
+    [SerializeField, Min(0f)] private float finalEatingDuration = 1.2f;
     [SerializeField, Min(0f)] private float finalCelebrationDuration = 3f;
+    [SerializeField, Min(0f)] private float finalSleepingDuration = 1.5f;
 
     [Header("Final")]
     [SerializeField] private CanvasGroup finalOverlay;
@@ -202,16 +206,35 @@ public sealed class GameFlow : MonoBehaviour
 
         if (isFinalDish)
         {
+            SetState(GameFlowState.FinalEating);
+            catController?.PlayReceiving();
+            yield return WaitForDuration(finalEatingDuration);
+
+            if (!CanContinue(version))
+            {
+                yield break;
+            }
+
             SetState(GameFlowState.FinalCelebration);
             catController?.PlayFinalPurr();
-            ShowFinalOverlay();
-            BanquetCompleted?.Invoke();
             yield return WaitForDuration(finalCelebrationDuration);
 
             if (!CanContinue(version))
             {
                 yield break;
             }
+
+            SetState(GameFlowState.FinalSleeping);
+            catController?.PlaySleeping();
+            yield return WaitForDuration(finalSleepingDuration);
+
+            if (!CanContinue(version))
+            {
+                yield break;
+            }
+
+            ShowFinalOverlay();
+            BanquetCompleted?.Invoke();
 
             transitionRoutine = null;
             SetState(GameFlowState.Completed);

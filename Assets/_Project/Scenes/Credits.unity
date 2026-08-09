@@ -433,10 +433,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "SUN TIENE HAMBRE\nCreado para Takernal Jam\n\nAUTOR\xCDA Y PROGRAMACI\xD3N\nLattive
-    - Tico\n\nARTE IA\n\nAUDIO\n[Completar autor\xEDa de m\xFAsica y efectos]\n\nRECURSOS
-    Y LICENCIAS\n[Recurso \u2014 Autor \u2014 Licencia \u2014 Enlace]\n\nGracias
-    a todo el pueblo que mantuvo encendido el banquete."
+  m_text: "RECETA DEL PUEBLO\nCreado para Takernal Jam\n\nAUTOR\xCDA Y PROGRAMACI\xD3N\nTico\n\nARTE\nIA
+    & Tico\n\nAUDIO\n[Completar autor\xEDa de m\xFAsica y efectos]\n\nRECURSOS Y
+    LICENCIAS\n[Recurso \u2014 Autor \u2014 Licencia \u2014 Enlace]\n\nGracias a
+    todo el pueblo que mantuvo encendido el banquete."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54dab4b8b720cb64895718a1767fe2be, type: 2}
   m_sharedMaterial: {fileID: -5671939583116450935, guid: 54dab4b8b720cb64895718a1767fe2be, type: 2}

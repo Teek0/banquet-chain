@@ -6,12 +6,14 @@ public sealed class RecipeHUDUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private RecipeRunner recipeRunner;
+    [SerializeField] private GameFlow gameFlow;
     [SerializeField] private TMP_Text dishNameLabel;
     [SerializeField] private TMP_Text orderLabel;
     [SerializeField] private TMP_Text statusLabel;
     [SerializeField] private TMP_Text progressLabel;
     [SerializeField] private TMP_Text stepsLabel;
     [SerializeField] private TMP_Text pauseHintLabel;
+    [SerializeField, Min(0)] private int detailedRecipeCount = 1;
 
     [Header("Status Colors")]
     [SerializeField] private Color waitingColor = new(0.67f, 0.71f, 0.82f);
@@ -23,6 +25,8 @@ public sealed class RecipeHUDUI : MonoBehaviour
 
     private void Awake()
     {
+        gameFlow ??= FindFirstObjectByType<GameFlow>();
+
         if (recipeRunner == null
             || dishNameLabel == null
             || orderLabel == null
@@ -66,6 +70,10 @@ public sealed class RecipeHUDUI : MonoBehaviour
         recipeRunner.StepStarted += HandleStepStarted;
         recipeRunner.StepCompleted += HandleStepCompleted;
         recipeRunner.StateChanged += HandleStateChanged;
+        if (gameFlow != null)
+        {
+            gameFlow.RecipeActivated += HandleRecipeActivated;
+        }
         isSubscribed = true;
     }
 
@@ -78,6 +86,11 @@ public sealed class RecipeHUDUI : MonoBehaviour
             recipeRunner.StepStarted -= HandleStepStarted;
             recipeRunner.StepCompleted -= HandleStepCompleted;
             recipeRunner.StateChanged -= HandleStateChanged;
+        }
+
+        if (gameFlow != null)
+        {
+            gameFlow.RecipeActivated -= HandleRecipeActivated;
         }
 
         isSubscribed = false;
@@ -116,6 +129,11 @@ public sealed class RecipeHUDUI : MonoBehaviour
     private void HandleRecipeStarted(RecipeData recipe)
     {
         Render(recipe, -1, -1, false);
+    }
+
+    private void HandleRecipeActivated(int _, RecipeData __)
+    {
+        RefreshFromRunner();
     }
 
     private void HandleRecipeCompleted(RecipeData recipe)
@@ -170,6 +188,26 @@ public sealed class RecipeHUDUI : MonoBehaviour
         bool recipeCompleted
     )
     {
+        bool showDetails = gameFlow == null
+            || gameFlow.CurrentRecipeIndex < detailedRecipeCount;
+
+        if (!showDetails)
+        {
+            SetText(dishNameLabel, "PEDIDO DE SUN");
+            SetText(orderLabel, string.Empty);
+            SetText(stepsLabel, string.Empty);
+            SetText(
+                progressLabel,
+                BuildCompactProgress(
+                    recipe,
+                    activeStepIndex,
+                    completedThroughIndex,
+                    recipeCompleted
+                )
+            );
+            return;
+        }
+
         if (recipe == null)
         {
             SetText(dishNameLabel, "SIN RECETA");
@@ -225,5 +263,31 @@ public sealed class RecipeHUDUI : MonoBehaviour
     private static int GetLastStepIndex(RecipeData recipe)
     {
         return recipe?.Steps == null ? -1 : recipe.Steps.Count - 1;
+    }
+
+    private static string BuildCompactProgress(
+        RecipeData recipe,
+        int activeStepIndex,
+        int completedThroughIndex,
+        bool recipeCompleted
+    )
+    {
+        int total = recipe?.Steps?.Count ?? 0;
+
+        if (total == 0)
+        {
+            return string.Empty;
+        }
+
+        int current = recipeCompleted
+            ? total
+            : Mathf.Clamp(
+                activeStepIndex >= 0
+                    ? activeStepIndex + 1
+                    : completedThroughIndex + 1,
+                1,
+                total
+            );
+        return $"PASO {current} / {total}";
     }
 }

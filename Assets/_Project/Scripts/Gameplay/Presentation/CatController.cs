@@ -9,7 +9,8 @@ public enum CatVisualState
     Waiting,
     Receiving,
     Relaxed,
-    Satisfied
+    Satisfied,
+    Sleeping
 }
 
 public sealed class CatController : MonoBehaviour
@@ -19,9 +20,13 @@ public sealed class CatController : MonoBehaviour
 
     [Header("Visuals")]
     [SerializeField] private Transform visualRoot;
+    [SerializeField] private GameObject awakeVisual;
+    [SerializeField] private GameObject sleepingVisual;
     [SerializeField] private Graphic bodyGraphic;
     [SerializeField] private TMP_Text stateLabel;
     [SerializeField] private TMP_Text requestLabel;
+    [SerializeField] private Animator animator;
+    [SerializeField] private string visualStateParameter = "VisualState";
     [SerializeField] private Color hungryColor = new(0.43f, 0.34f, 0.48f, 1f);
     [SerializeField] private Color requestingColor = new(0.78f, 0.48f, 0.22f, 1f);
     [SerializeField] private Color relaxedColor = new(0.46f, 0.62f, 0.72f, 1f);
@@ -138,6 +143,15 @@ public sealed class CatController : MonoBehaviour
         RefreshLabels(true);
     }
 
+    public void PlaySleeping()
+    {
+        Satisfaction = 3;
+        receivingTimeRemaining = 0f;
+        State = CatVisualState.Sleeping;
+        RefreshLabels(true);
+        ApplyVisuals(0f, true);
+    }
+
     public void AdvanceVisual(float deltaTime)
     {
         float safeDeltaTime = Mathf.Max(0f, deltaTime);
@@ -175,6 +189,17 @@ public sealed class CatController : MonoBehaviour
         if (bodyGraphic == null)
         {
             bodyGraphic = GetComponent<Graphic>();
+        }
+
+        if (awakeVisual == null && visualRoot != null
+            && visualRoot.gameObject != gameObject)
+        {
+            awakeVisual = visualRoot.gameObject;
+        }
+
+        if (animator == null && visualRoot != null)
+        {
+            animator = visualRoot.GetComponentInChildren<Animator>(true);
         }
     }
 
@@ -252,6 +277,7 @@ public sealed class CatController : MonoBehaviour
                 CatVisualState.Receiving => "PROBANDO...",
                 CatVisualState.Relaxed => $"MÁS TRANQUILO · {Satisfaction}/3",
                 CatVisualState.Satisfied => "SATISFECHO · RONRONEANDO",
+                CatVisualState.Sleeping => "DURMIENDO",
                 _ => "HAMBRIENTO"
             };
         }
@@ -263,11 +289,36 @@ public sealed class CatController : MonoBehaviour
                 : CurrentRequest;
         }
 
+        SetAnimatorState();
         renderedState = State;
     }
 
     private void ApplyVisuals(float deltaTime, bool immediate)
     {
+        bool isSleeping = State == CatVisualState.Sleeping;
+
+        if (awakeVisual != null && awakeVisual != gameObject
+            && awakeVisual.activeSelf == isSleeping)
+        {
+            awakeVisual.SetActive(!isSleeping);
+        }
+
+        if (sleepingVisual != null && sleepingVisual != gameObject
+            && sleepingVisual.activeSelf != isSleeping)
+        {
+            sleepingVisual.SetActive(isSleeping);
+        }
+
+        if (renderedState != State)
+        {
+            SetAnimatorState();
+        }
+
+        if (isSleeping)
+        {
+            return;
+        }
+
         if (!hasCapturedBaseTransform || visualRoot == null)
         {
             return;
@@ -339,6 +390,24 @@ public sealed class CatController : MonoBehaviour
             bodyGraphic.color = immediate
                 ? desiredColor
                 : Color.Lerp(bodyGraphic.color, desiredColor, blend);
+        }
+    }
+
+    private void SetAnimatorState()
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(visualStateParameter))
+        {
+            return;
+        }
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.type == AnimatorControllerParameterType.Int
+                && parameter.name == visualStateParameter)
+            {
+                animator.SetInteger(visualStateParameter, (int)State);
+                return;
+            }
         }
     }
 }

@@ -1633,8 +1633,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.00015258789}
-  m_SizeDelta: {x: 760, y: 252.5247}
+  m_AnchoredPosition: {x: -4.705, y: 1.569}
+  m_SizeDelta: {x: 601.673, y: 254.062}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &597720396
 MonoBehaviour:
@@ -1656,7 +1656,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SUN TIENE HAMBRE
+  m_text: Receta de Pueblo
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54dab4b8b720cb64895718a1767fe2be, type: 2}
   m_sharedMaterial: {fileID: -5671939583116450935, guid: 54dab4b8b720cb64895718a1767fe2be, type: 2}

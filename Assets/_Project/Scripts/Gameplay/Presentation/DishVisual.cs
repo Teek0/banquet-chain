@@ -310,7 +310,7 @@ public sealed class DishVisual : MonoBehaviour
                 : "PREPARANDO",
             DishVisualState.Ready => "PLATO LISTO",
             DishVisualState.Serving => "ENTREGANDO...",
-            DishVisualState.Completed => "PLATO SERVIDO ✓",
+            DishVisualState.Completed => "PLATO SERVIDO",
             _ => "PLATO VACÍO"
         };
     }

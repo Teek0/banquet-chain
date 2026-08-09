@@ -13,83 +13,77 @@ MonoBehaviour:
   m_Name: Recipe_PlatoDelPueblo
   m_EditorClassIdentifier: BanquetChain.Recipes::RecipeData
   displayName: El Plato del Pueblo
-  icon: {fileID: 0}
-  catOrder: '¡Quiero el Plato del Pueblo!'
+  icon: {fileID: -3326445004359321814, guid: 611ebbb904ca3f94e809378593e66b64, type: 3}
+  catOrder: "\xA1Quiero el Plato del Pueblo!"
   steps:
   - expectedWord: pescado
-    icon: {fileID: 0}
+    icon: {fileID: -2912627706816550767, guid: 60046bae5774bba40aac06abdfa53ef0, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
-  - expectedWord: limón
-    icon: {fileID: 0}
+  - expectedWord: "lim\xF3n"
+    icon: {fileID: 5712298271998849902, guid: 075e1ee5d7ce509409e60cd7d499939b, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: verduras
-    icon: {fileID: 0}
+    icon: {fileID: 6549346539436749655, guid: 34d22d6c9d95fce4dab1a0a25d0fbb5f, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: cortar
-    icon: {fileID: 0}
+    icon: {fileID: 761100573506273824, guid: 6a72bd69eee88164ba66714421724649, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: condimentar
-    icon: {fileID: 0}
+    icon: {fileID: -7243536010358541036, guid: 86fb513c36cd17f448f5e36d4b3c14bf, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: cocinar
-    icon: {fileID: 0}
+    icon: {fileID: -4179183935955756627, guid: 8f53438e981ccb84c8edb587ecc5c583, type: 3}
     actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.4
     transformsDish: 1
   - expectedWord: masa
-    icon: {fileID: 0}
+    icon: {fileID: -4971564594829922754, guid: cd2bc83a03ae48f4599607a2283c55b1, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: frutas
-    icon: {fileID: 0}
+    icon: {fileID: -7193961697487593658, guid: b36c217494f48154093f8138769daf47, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.25
     transformsDish: 1
   - expectedWord: mezclar
-    icon: {fileID: 0}
+    icon: {fileID: -3918858214514980661, guid: 7aca5f724841e8e46807954e04808283, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: hornear
-    icon: {fileID: 0}
+    icon: {fileID: 6563802292705238345, guid: 4e5f7dec91fb73542a8804248c27bd19, type: 3}
     actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.45
     transformsDish: 1
   - expectedWord: decorar
-    icon: {fileID: 0}
+    icon: {fileID: -6832555458227140535, guid: c0f5d672d58bd574fa49d635ad2e2b0d, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.35
     transformsDish: 1
-  - expectedWord: compartir
-    icon: {fileID: 0}
-    actorId: servicio
-    reactionType: 4
-    durationBeforeNextStep: 0.5
-    transformsDish: 1
   - expectedWord: servir
-    icon: {fileID: 0}
+    icon: {fileID: -8913068029994302743, guid: 97ef06f7c9b28ed429da5bda03b5e642, type: 3}
     actorId: servicio
     reactionType: 3
     durationBeforeNextStep: 0.6

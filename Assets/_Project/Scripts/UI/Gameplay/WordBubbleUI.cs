@@ -6,6 +6,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TypingInput typingInput;
+    [SerializeField] private GameFlow gameFlow;
     [SerializeField] private TMP_Text stateLabel;
     [SerializeField] private TMP_Text wordLabel;
     [SerializeField] private TMP_Text feedbackLabel;
@@ -13,6 +14,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     [Header("Demo")]
     [SerializeField] private string initialWord = "mantequilla";
+    [SerializeField, Min(0)] private int revealedRecipeCount = 1;
 
     [Header("Feedback")]
     [SerializeField] private float completionDuration = 0.8f;
@@ -23,6 +25,7 @@ public sealed class WordBubbleUI : MonoBehaviour
     [SerializeField] private Color successColor = new(0.42f, 0.9f, 0.58f);
 
     private Coroutine feedbackRoutine;
+    private bool revealExpectedWord = true;
 
     private void Awake()
     {
@@ -45,6 +48,8 @@ public sealed class WordBubbleUI : MonoBehaviour
 
     private void OnEnable()
     {
+        gameFlow ??= FindFirstObjectByType<GameFlow>();
+
         if (typingInput == null)
         {
             return;
@@ -54,11 +59,18 @@ public sealed class WordBubbleUI : MonoBehaviour
         typingInput.IncorrectCharacterEntered += HandleIncorrectCharacter;
         typingInput.ProgressChanged += HandleProgressChanged;
         typingInput.WordCompleted += HandleWordCompleted;
+
+        if (gameFlow != null)
+        {
+            gameFlow.RecipeActivated += HandleRecipeActivated;
+        }
     }
 
     private void Start()
     {
-        if (typingInput != null && !string.IsNullOrWhiteSpace(initialWord))
+        if (typingInput != null
+            && string.IsNullOrWhiteSpace(typingInput.ExpectedWord)
+            && !string.IsNullOrWhiteSpace(initialWord))
         {
             SetWord(initialWord);
         }
@@ -72,6 +84,11 @@ public sealed class WordBubbleUI : MonoBehaviour
             typingInput.IncorrectCharacterEntered -= HandleIncorrectCharacter;
             typingInput.ProgressChanged -= HandleProgressChanged;
             typingInput.WordCompleted -= HandleWordCompleted;
+        }
+
+        if (gameFlow != null)
+        {
+            gameFlow.RecipeActivated -= HandleRecipeActivated;
         }
 
         StopFeedbackRoutine();
@@ -148,6 +165,12 @@ public sealed class WordBubbleUI : MonoBehaviour
         );
     }
 
+    private void HandleRecipeActivated(int recipeIndex, RecipeData _)
+    {
+        revealExpectedWord = recipeIndex < revealedRecipeCount;
+        RefreshWord(typingInput != null ? typingInput.Progress : 0);
+    }
+
     private void RefreshWord(int progress)
     {
         if (typingInput == null || wordLabel == null)
@@ -159,7 +182,11 @@ public sealed class WordBubbleUI : MonoBehaviour
         int safeProgress = Mathf.Clamp(progress, 0, displayedWord.Length);
 
         string typed = typingInput.TypedText.ToUpperInvariant();
-        string paperWord = typed + displayedWord.Substring(Mathf.Min(typed.Length, displayedWord.Length));
+        string paperWord = revealExpectedWord
+            ? typed + displayedWord.Substring(
+                Mathf.Min(typed.Length, displayedWord.Length)
+            )
+            : typed;
         if (paperWordRenderer != null
             && paperWordRenderer.RenderWord(paperWord, typingInput.CorrectPrefixLength, typed.Length))
         {
@@ -169,7 +196,9 @@ public sealed class WordBubbleUI : MonoBehaviour
         string typedRemainder = typingInput.HasError
             ? EscapeRichText(typed.Substring(Mathf.Min(safeProgress, typed.Length)))
             : string.Empty;
-        string pending = EscapeRichText(displayedWord.Substring(safeProgress));
+        string pending = revealExpectedWord
+            ? EscapeRichText(displayedWord.Substring(safeProgress))
+            : string.Empty;
 
         string completedHex = ColorUtility.ToHtmlStringRGB(completedColor);
         string pendingHex = ColorUtility.ToHtmlStringRGB(pendingColor);

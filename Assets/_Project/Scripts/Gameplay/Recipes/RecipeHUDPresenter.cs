@@ -27,13 +27,13 @@ public static class RecipeHUDPresenter
             if (index <= completedThroughIndex)
             {
                 entries.Add(
-                    $"<color={CompletedColor}><b>✓ {word}</b></color>"
+                    $"<color={CompletedColor}><b>{word}</b></color>"
                 );
             }
             else if (index == activeStepIndex)
             {
                 entries.Add(
-                    $"<color={ActiveColor}><b>▶ {word}</b></color>"
+                    $"<color={ActiveColor}><b>> {word}</b></color>"
                 );
             }
             else

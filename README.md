@@ -159,6 +159,24 @@ Los scripts y prefabs heredados de plataformas se conservan como referencia,
 pero `Player2D`, `PlayerMotor2D` y `CameraFollow2D` no forman parte de la
 composición actual de `Playground`.
 
+## Presentación de escenario
+
+Los chefs visibles son objetos del escenario con `SpriteRenderer`: `Chef1`
+atiende `despensa`, `Chef2` atiende `horno` y `Chef3` atiende `servicio`. Las
+burbujas viven serializadas en el Canvas y solo siguen la posición de esos
+objetos; no se crean elementos visuales durante Play Mode.
+
+Después de incorporar estos scripts, abre `Playground` y ejecuta una vez
+`Banquet Chain > Configurar gameplay en escenario`. El comando guarda en la
+escena las tres burbujas de chef, `SunRequestBubble`, `CatFlowActor` y la
+variante inactiva `BigCatSleeping`. También conecta el HUD: la primera receta
+muestra la ayuda completa y las posteriores ocultan la lista y la palabra
+pendiente, conservando en pantalla únicamente lo que el jugador escribe.
+
+Los Animator son opcionales hasta disponer de los clips. Cuando se asignen,
+los scripts publican los enteros `VisualState` y `ReactionType`; la secuencia
+final ya recorre comer, felicidad y sueño antes de abrir `Credits`.
+
 ## Cómo probar
 
 1. Abre el proyecto con Unity `6000.3.19f1`.

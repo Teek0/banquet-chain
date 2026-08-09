@@ -13,29 +13,29 @@ MonoBehaviour:
   m_Name: Recipe_PanCaliente
   m_EditorClassIdentifier: BanquetChain.Recipes::RecipeData
   displayName: Pan caliente
-  icon: {fileID: 0}
-  catOrder: '¡Quiero pan caliente!'
+  icon: {fileID: 3745711350698742192, guid: c03d06101a711214eb12298f2e4d4c28, type: 3}
+  catOrder: "\xA1Quiero pan caliente!"
   steps:
   - expectedWord: pan
-    icon: {fileID: 0}
+    icon: {fileID: 3771889087589363716, guid: 0e985a3c9942b7147bb5d653f87b2f8e, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: mantequilla
-    icon: {fileID: 0}
+    icon: {fileID: 3046939349658346525, guid: bf1bc765d51a3ad40bab4e6d3ab6ff4c, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.35
     transformsDish: 1
   - expectedWord: tostar
-    icon: {fileID: 0}
+    icon: {fileID: -7688980531593472791, guid: c986c5f51fa201743a115a1f481e70a9, type: 3}
     actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.5
     transformsDish: 1
   - expectedWord: servir
-    icon: {fileID: 0}
+    icon: {fileID: -8913068029994302743, guid: 97ef06f7c9b28ed429da5bda03b5e642, type: 3}
     actorId: servicio
     reactionType: 3
     durationBeforeNextStep: 0.6

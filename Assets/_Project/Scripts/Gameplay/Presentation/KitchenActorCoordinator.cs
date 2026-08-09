@@ -43,11 +43,19 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
     {
         actorsById.Clear();
 
-        if (actors == null || actors.Count == 0)
+        actors ??= new List<KitchenActor>();
+
+        KitchenActor[] sceneActors = FindObjectsByType<KitchenActor>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None
+        );
+
+        foreach (KitchenActor sceneActor in sceneActors)
         {
-            actors = new List<KitchenActor>(
-                GetComponentsInChildren<KitchenActor>(true)
-            );
+            if (sceneActor != null && !actors.Contains(sceneActor))
+            {
+                actors.Add(sceneActor);
+            }
         }
 
         foreach (KitchenActor actor in actors)
@@ -57,7 +65,19 @@ public sealed class KitchenActorCoordinator : MonoBehaviour
                 continue;
             }
 
-            if (!actorsById.TryAdd(actor.ActorId.Trim(), actor))
+            string actorId = actor.ActorId.Trim();
+
+            if (!actorsById.TryGetValue(actorId, out KitchenActor current))
+            {
+                actorsById.Add(actorId, actor);
+                continue;
+            }
+
+            if (actor.PresentationPriority > current.PresentationPriority)
+            {
+                actorsById[actorId] = actor;
+            }
+            else if (actor.PresentationPriority == current.PresentationPriority)
             {
                 Debug.LogWarning(
                     $"Hay más de un KitchenActor con el id '{actor.ActorId}'.",

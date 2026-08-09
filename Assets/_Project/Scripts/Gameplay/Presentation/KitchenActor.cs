@@ -21,6 +21,12 @@ public sealed class KitchenActor : MonoBehaviour
     [SerializeField] private Transform visualRoot;
     [SerializeField] private Graphic bodyGraphic;
     [SerializeField] private TMP_Text nameLabel;
+    [SerializeField] private SpriteRenderer[] spriteRenderers = System.Array.Empty<SpriteRenderer>();
+    [SerializeField] private Animator animator;
+    [SerializeField] private bool tintWorldSprites;
+    [SerializeField] private int presentationPriority;
+    [SerializeField] private string visualStateParameter = "VisualState";
+    [SerializeField] private string reactionTypeParameter = "ReactionType";
     [SerializeField] private Color idleColor = new(0.19f, 0.14f, 0.16f, 1f);
     [SerializeField] private Color targetColor = new(0.93f, 0.68f, 0.25f, 1f);
     [SerializeField] private Color celebrationColor = new(0.35f, 0.82f, 0.52f, 1f);
@@ -29,6 +35,7 @@ public sealed class KitchenActor : MonoBehaviour
     [SerializeField, Min(0.05f)] private float actionDuration = 0.42f;
     [SerializeField, Min(0.05f)] private float celebrationDuration = 1.05f;
     [SerializeField, Min(0f)] private float transitionSpeed = 18f;
+    [SerializeField, Min(0f)] private float motionDistance = 12f;
 
     private Vector3 baseLocalPosition;
     private Vector3 baseLocalScale;
@@ -42,6 +49,7 @@ public sealed class KitchenActor : MonoBehaviour
     private KitchenActorVisualState lastRenderedState = (KitchenActorVisualState)(-1);
 
     public string ActorId => actorId;
+    public int PresentationPriority => presentationPriority;
     public float AnticipationProgress => anticipationProgress;
     public bool HasActiveReaction => actionTimeRemaining > 0f
         || celebrationTimeRemaining > 0f;
@@ -184,6 +192,16 @@ public sealed class KitchenActor : MonoBehaviour
         {
             nameLabel = GetComponentInChildren<TMP_Text>(true);
         }
+
+        if (spriteRenderers == null || spriteRenderers.Length == 0)
+        {
+            spriteRenderers = visualRoot.GetComponentsInChildren<SpriteRenderer>(true);
+        }
+
+        if (animator == null)
+        {
+            animator = visualRoot.GetComponentInChildren<Animator>(true);
+        }
     }
 
     private void CaptureBaseTransform()
@@ -226,7 +244,7 @@ public sealed class KitchenActor : MonoBehaviour
             float phase = 1f - actionTimeRemaining / duration;
             scaleBoost = Mathf.Sin(phase * Mathf.PI) * 0.16f;
             tilt = GetActionTilt() * Mathf.Sin(phase * Mathf.PI * 2f);
-            bounce = Mathf.Sin(phase * Mathf.PI) * 12f;
+            bounce = Mathf.Sin(phase * Mathf.PI) * motionDistance;
         }
         else if (state == KitchenActorVisualState.Celebrating)
         {
@@ -234,7 +252,7 @@ public sealed class KitchenActor : MonoBehaviour
             float phase = 1f - celebrationTimeRemaining / duration;
             scaleBoost = 0.05f + Mathf.Sin(phase * Mathf.PI * 5f) * 0.025f;
             tilt = Mathf.Sin(phase * Mathf.PI * 6f) * 3f;
-            bounce = Mathf.Abs(Mathf.Sin(phase * Mathf.PI * 3f)) * 12f;
+            bounce = Mathf.Abs(Mathf.Sin(phase * Mathf.PI * 3f)) * motionDistance;
         }
 
         Vector3 desiredPosition = baseLocalPosition + Vector3.up * bounce;
@@ -263,28 +281,74 @@ public sealed class KitchenActor : MonoBehaviour
 
         if (bodyGraphic != null)
         {
-            Color desiredColor = state switch
-            {
-                KitchenActorVisualState.Celebrating => celebrationColor,
-                KitchenActorVisualState.Targeted => targetColor,
-                KitchenActorVisualState.Anticipating => Color.Lerp(
-                    targetColor,
-                    Color.white,
-                    anticipationProgress * 0.32f
-                ),
-                KitchenActorVisualState.Acting => Color.Lerp(
-                    targetColor,
-                    Color.white,
-                    0.2f
-                ),
-                _ => idleColor
-            };
+            Color desiredColor = GetDesiredColor(state);
             bodyGraphic.color = immediate
                 ? desiredColor
                 : Color.Lerp(bodyGraphic.color, desiredColor, blend);
         }
 
+        if (tintWorldSprites && spriteRenderers != null)
+        {
+            Color desiredColor = GetDesiredColor(state);
+
+            foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+            {
+                if (spriteRenderer == null)
+                {
+                    continue;
+                }
+
+                spriteRenderer.color = immediate
+                    ? desiredColor
+                    : Color.Lerp(spriteRenderer.color, desiredColor, blend);
+            }
+        }
+
+        if (state != lastRenderedState)
+        {
+            SetAnimatorInteger(visualStateParameter, (int)state);
+            SetAnimatorInteger(reactionTypeParameter, (int)lastReactionType);
+        }
+
         lastRenderedState = state;
+    }
+
+    private Color GetDesiredColor(KitchenActorVisualState state)
+    {
+        return state switch
+        {
+            KitchenActorVisualState.Celebrating => celebrationColor,
+            KitchenActorVisualState.Targeted => targetColor,
+            KitchenActorVisualState.Anticipating => Color.Lerp(
+                targetColor,
+                Color.white,
+                anticipationProgress * 0.32f
+            ),
+            KitchenActorVisualState.Acting => Color.Lerp(
+                targetColor,
+                Color.white,
+                0.2f
+            ),
+            _ => idleColor
+        };
+    }
+
+    private void SetAnimatorInteger(string parameterName, int value)
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(parameterName))
+        {
+            return;
+        }
+
+        foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
+            if (parameter.type == AnimatorControllerParameterType.Int
+                && parameter.name == parameterName)
+            {
+                animator.SetInteger(parameterName, value);
+                return;
+            }
+        }
     }
 
     private float GetActionTilt()
@@ -319,10 +383,10 @@ public sealed class KitchenActor : MonoBehaviour
             : displayName;
         nameLabel.text = state switch
         {
-            KitchenActorVisualState.Targeted => $"▶ {label}",
-            KitchenActorVisualState.Anticipating => $"▶ {label}",
-            KitchenActorVisualState.Acting => $"✦ {label}",
-            KitchenActorVisualState.Celebrating => $"★ {label}",
+            KitchenActorVisualState.Targeted => $"> {label}",
+            KitchenActorVisualState.Anticipating => $"> {label}",
+            KitchenActorVisualState.Acting => label,
+            KitchenActorVisualState.Celebrating => label,
             _ => label
         };
     }
