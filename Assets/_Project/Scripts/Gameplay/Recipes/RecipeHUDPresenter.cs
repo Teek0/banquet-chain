@@ -14,7 +14,7 @@ public static class RecipeHUDPresenter
     {
         if (recipe?.Steps == null || recipe.Steps.Count == 0)
         {
-            return "Sin pasos configurados";
+            return GameLocalization.Text("Sin pasos configurados", "No steps configured");
         }
 
         List<string> entries = new(recipe.Steps.Count);
@@ -56,22 +56,22 @@ public static class RecipeHUDPresenter
 
         if (total == 0)
         {
-            return "PROGRESO · 0 / 0";
+            return GameLocalization.Text("PROGRESO · 0 / 0", "PROGRESS · 0 / 0");
         }
 
         if (recipeCompleted)
         {
-            return $"RECETA · {total} / {total}";
+            return GameLocalization.Text($"RECETA · {total} / {total}", $"RECIPE · {total} / {total}");
         }
 
         if (activeStepIndex >= 0)
         {
             int current = Clamp(activeStepIndex + 1, 1, total);
-            return $"PASO · {current} / {total}";
+            return GameLocalization.Text($"PASO · {current} / {total}", $"STEP · {current} / {total}");
         }
 
         int completed = Clamp(completedThroughIndex + 1, 0, total);
-        return $"PROGRESO · {completed} / {total}";
+        return GameLocalization.Text($"PROGRESO · {completed} / {total}", $"PROGRESS · {completed} / {total}");
     }
 
     public static string EscapeRichText(string text)

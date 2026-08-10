@@ -299,12 +299,7 @@ public sealed class GameplayAudio : MonoBehaviour
     private void HandleStepCompleted(RecipeStep step, int _)
     {
         bool isServing = step != null
-            && (step.ReactionType == KitchenReactionType.Serving
-                || string.Equals(
-                    step.ExpectedWord?.Trim(),
-                    "servir",
-                    StringComparison.OrdinalIgnoreCase
-                ));
+            && step.ReactionType == KitchenReactionType.Serving;
         PlayOneShot(
             isServing
                 ? GameplayAudioCue.DishServed

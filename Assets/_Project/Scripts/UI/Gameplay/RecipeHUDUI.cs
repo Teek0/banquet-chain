@@ -41,7 +41,7 @@ public sealed class RecipeHUDUI : MonoBehaviour
 
         if (pauseHintLabel != null)
         {
-            pauseHintLabel.text = "ESC · PAUSA";
+            pauseHintLabel.text = LanguageManager.Text("ESC · PAUSA", "ESC · PAUSE");
         }
     }
 
@@ -159,22 +159,22 @@ public sealed class RecipeHUDUI : MonoBehaviour
         switch (state)
         {
             case RecipeRunnerState.PresentingOrder:
-                SetStatus("PEDIDO RECIBIDO", waitingColor);
+                SetStatus(LanguageManager.Text("PEDIDO RECIBIDO", "ORDER RECEIVED"), waitingColor);
                 break;
             case RecipeRunnerState.AwaitingInput:
-                SetStatus("ESCRIBE", activeColor);
+                SetStatus(LanguageManager.Text("ESCRIBE", "TYPE"), activeColor);
                 break;
             case RecipeRunnerState.ExecutingAction:
-                SetStatus("PREPARANDO", actionColor);
+                SetStatus(LanguageManager.Text("PREPARANDO", "PREPARING"), actionColor);
                 break;
             case RecipeRunnerState.ServingDish:
-                SetStatus("SIRVIENDO", actionColor);
+                SetStatus(LanguageManager.Text("SIRVIENDO", "SERVING"), actionColor);
                 break;
             case RecipeRunnerState.RecipeCompleted:
-                SetStatus("RECETA COMPLETADA", completedColor);
+                SetStatus(LanguageManager.Text("RECETA COMPLETADA", "RECIPE COMPLETE"), completedColor);
                 break;
             default:
-                SetStatus("ESPERANDO", waitingColor);
+                SetStatus(LanguageManager.Text("ESPERANDO", "WAITING"), waitingColor);
                 break;
         }
     }
@@ -191,7 +191,7 @@ public sealed class RecipeHUDUI : MonoBehaviour
 
         if (!showDetails)
         {
-            SetText(dishNameLabel, "PEDIDO DE SUN");
+            SetText(dishNameLabel, LanguageManager.Text("PEDIDO DE SUN", "SUN'S ORDER"));
             SetText(orderLabel, string.Empty);
             SetText(stepsLabel, string.Empty);
             SetText(
@@ -208,8 +208,8 @@ public sealed class RecipeHUDUI : MonoBehaviour
 
         if (recipe == null)
         {
-            SetText(dishNameLabel, "SIN RECETA");
-            SetText(orderLabel, "Asigna una receta para comenzar.");
+            SetText(dishNameLabel, LanguageManager.Text("SIN RECETA", "NO RECIPE"));
+            SetText(orderLabel, LanguageManager.Text("Asigna una receta para comenzar.", "Assign a recipe to begin."));
         }
         else
         {
@@ -219,7 +219,7 @@ public sealed class RecipeHUDUI : MonoBehaviour
             );
             SetText(
                 orderLabel,
-                "PEDIDO · “"
+                LanguageManager.Text("PEDIDO · “", "ORDER · “")
                     + RecipeHUDPresenter.EscapeRichText(recipe.CatOrder)
                     + "”"
             );
@@ -286,6 +286,6 @@ public sealed class RecipeHUDUI : MonoBehaviour
                 1,
                 total
             );
-        return $"PASO {current} / {total}";
+        return LanguageManager.Text($"PASO {current} / {total}", $"STEP {current} / {total}");
     }
 }

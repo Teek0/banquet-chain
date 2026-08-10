@@ -13,46 +13,55 @@ MonoBehaviour:
   m_Name: Recipe_SopaVerduras
   m_EditorClassIdentifier: BanquetChain.Recipes::RecipeData
   displayName: Sopa de verduras
+  displayNameEnglish: Vegetable Soup
   icon: {fileID: -5298896102490659518, guid: a055f1d29e01e164fb91e496ffb3e026, type: 3}
   catOrder: "\xA1Quiero sopa de verduras!"
+  catOrderEnglish: "I want vegetable soup!"
   steps:
   - expectedWord: tomate
+    expectedWordEnglish: tomato
     icon: {fileID: 8753038189908547863, guid: 9d49f1fe9f2260040a926fcf65879994, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: zanahoria
+    expectedWordEnglish: carrot
     icon: {fileID: -901639925186071542, guid: 0dda633da84da9846bb9b7735facb09a, type: 3}
     actorId: despensa
     reactionType: 0
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: cortar
+    expectedWordEnglish: chop
     icon: {fileID: 761100573506273824, guid: 6a72bd69eee88164ba66714421724649, type: 3}
     actorId: despensa
     reactionType: 1
     durationBeforeNextStep: 0.45
     transformsDish: 1
   - expectedWord: agua
+    expectedWordEnglish: water
     icon: {fileID: -868945178380921472, guid: 7dc8955cd5645fc43b38d90bdc147b92, type: 3}
     actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.3
     transformsDish: 1
   - expectedWord: hervir
+    expectedWordEnglish: boil
     icon: {fileID: 21300000, guid: 4fd963b6cb5ade9499023f905578dec6, type: 3}
     actorId: horno
     reactionType: 2
     durationBeforeNextStep: 0.5
     transformsDish: 1
   - expectedWord: mezclar
+    expectedWordEnglish: mix
     icon: {fileID: -3918858214514980661, guid: 7aca5f724841e8e46807954e04808283, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.45
     transformsDish: 1
   - expectedWord: servir
+    expectedWordEnglish: serve
     icon: {fileID: -8913068029994302743, guid: 97ef06f7c9b28ed429da5bda03b5e642, type: 3}
     actorId: servicio
     reactionType: 3

@@ -164,12 +164,7 @@ public sealed class RecipeRunner : MonoBehaviour
         RecipeStep completedStep = CurrentStep;
         int completedIndex = currentStepIndex;
         bool isServingStep = completedStep.ReactionType
-                == KitchenReactionType.Serving
-            || string.Equals(
-                completedStep.ExpectedWord?.Trim(),
-                "servir",
-                StringComparison.OrdinalIgnoreCase
-            );
+            == KitchenReactionType.Serving;
 
         SetState(
             isServingStep

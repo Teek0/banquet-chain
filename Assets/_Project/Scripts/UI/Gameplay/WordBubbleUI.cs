@@ -143,7 +143,7 @@ public sealed class WordBubbleUI : MonoBehaviour
 
         StopFeedbackRoutine();
         ClearFeedbackText();
-        SetState(">> ESCRIBE", activeColor);
+        SetState(LanguageManager.Text(">> ESCRIBE", ">> TYPE"), activeColor);
         typingInput.SetExpectedWord(word, enableInput);
         revealExpectedWord = true;
         hintCountdownActive = false;
@@ -154,7 +154,7 @@ public sealed class WordBubbleUI : MonoBehaviour
     {
         if (typingInput != null && !typingInput.HasError)
         {
-            SetState(">> ESCRIBE", activeColor);
+            SetState(LanguageManager.Text(">> ESCRIBE", ">> TYPE"), activeColor);
         }
 
         RefreshWord(progress);
@@ -175,7 +175,7 @@ public sealed class WordBubbleUI : MonoBehaviour
         {
             StopFeedbackRoutine();
             ClearFeedbackText();
-            SetState(">> ESCRIBE", activeColor);
+            SetState(LanguageManager.Text(">> ESCRIBE", ">> TYPE"), activeColor);
         }
 
         RefreshWord(progress);
@@ -189,9 +189,11 @@ public sealed class WordBubbleUI : MonoBehaviour
         }
 
         StopFeedbackRoutine();
-        SetState("! CORRIGE", errorColor);
-        feedbackLabel.text = $"ESCRITO: {typingInput.TypedText.ToUpperInvariant()}"
-            + " · BACKSPACE PARA CORREGIR";
+        SetState(LanguageManager.Text("! CORRIGE", "! CORRECT"), errorColor);
+        feedbackLabel.text = LanguageManager.Text(
+            $"ESCRITO: {typingInput.TypedText.ToUpperInvariant()} · BACKSPACE PARA CORREGIR",
+            $"TYPED: {typingInput.TypedText.ToUpperInvariant()} · BACKSPACE TO CORRECT"
+        );
         feedbackLabel.color = errorColor;
     }
 
@@ -199,9 +201,9 @@ public sealed class WordBubbleUI : MonoBehaviour
     {
         hintCountdownActive = false;
         RefreshWord(typingInput.Progress);
-        SetState("OK · LISTO", successColor);
+        SetState(LanguageManager.Text("OK · LISTO", "OK · READY"), successColor);
         ShowTemporaryFeedback(
-            "Palabra completada",
+            LanguageManager.Text("Palabra completada", "Word complete"),
             successColor,
             completionDuration
         );

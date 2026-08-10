@@ -141,7 +141,7 @@ public sealed class RecipeDataTests
             );
             Assert.That(
                 messages,
-                Contains.Item("El último paso debería usar la palabra 'servir'.")
+                Contains.Item("El último paso debería ser de servicio.")
             );
         }
         finally

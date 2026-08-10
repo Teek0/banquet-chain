@@ -125,7 +125,7 @@ public sealed class TypingTutorial : MonoBehaviour
 
         Show(
             TypingTutorialStage.Intro,
-            "TUTORIAL · ESCRIBE LA PALABRA ENTRE CORCHETES"
+            GameLocalization.Text("TUTORIAL · ESCRIBE LA PALABRA ENTRE CORCHETES", "TUTORIAL · TYPE THE WORD IN BRACKETS")
         );
     }
 
@@ -140,7 +140,7 @@ public sealed class TypingTutorial : MonoBehaviour
         {
             Show(
                 TypingTutorialStage.Intro,
-                "TUTORIAL · ESCRIBE LA PALABRA ENTRE CORCHETES"
+                GameLocalization.Text("TUTORIAL · ESCRIBE LA PALABRA ENTRE CORCHETES", "TUTORIAL · TYPE THE WORD IN BRACKETS")
             );
             return;
         }
@@ -149,7 +149,7 @@ public sealed class TypingTutorial : MonoBehaviour
         {
             Show(
                 TypingTutorialStage.Practice,
-                "SIGUE LA PALABRA ACTIVA · CADA UNA MUEVE LA COCINA"
+                GameLocalization.Text("SIGUE LA PALABRA ACTIVA · CADA UNA MUEVE LA COCINA", "FOLLOW THE ACTIVE WORD · EACH ONE MOVES THE KITCHEN")
             );
         }
     }
@@ -164,7 +164,7 @@ public sealed class TypingTutorial : MonoBehaviour
 
         Show(
             TypingTutorialStage.CorrectLetter,
-            "BIEN · LAS LETRAS SUBRAYADAS YA ESTÁN COMPLETAS"
+            GameLocalization.Text("BIEN · LAS LETRAS SUBRAYADAS YA ESTÁN COMPLETAS", "GOOD · THE UNDERLINED LETTERS ARE COMPLETE")
         );
     }
 
@@ -177,7 +177,7 @@ public sealed class TypingTutorial : MonoBehaviour
 
         Show(
             TypingTutorialStage.ErrorExplained,
-            "EL ERROR QUEDA ESCRITO · USA BACKSPACE PARA CORREGIR"
+            GameLocalization.Text("EL ERROR QUEDA ESCRITO · USA BACKSPACE PARA CORREGIR", "THE ERROR STAYS TYPED · USE BACKSPACE TO CORRECT IT")
         );
     }
 
@@ -190,7 +190,7 @@ public sealed class TypingTutorial : MonoBehaviour
 
         Show(
             TypingTutorialStage.WordCompleted,
-            "PALABRA COMPLETA · OBSERVA CÓMO RESPONDE LA COCINA"
+            GameLocalization.Text("PALABRA COMPLETA · OBSERVA CÓMO RESPONDE LA COCINA", "WORD COMPLETE · WATCH THE KITCHEN RESPOND")
         );
     }
 

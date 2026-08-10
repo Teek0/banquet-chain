@@ -64,10 +64,16 @@ public sealed class PreludeController : MonoBehaviour
         typingInput.WordCompleted += HandleWordCompleted;
     }
 
-    private void Start() { LoadPhrases(); ShowCurrentSlide(); }
+    private void Start()
+    {
+        LanguageManager.LanguageChanged += HandleLanguageChanged;
+        LoadPhrases();
+        ShowCurrentSlide();
+    }
 
     private void OnDestroy()
     {
+        LanguageManager.LanguageChanged -= HandleLanguageChanged;
         if (tutorialWordRenderer != null)
             tutorialWordRenderer.SetCaretActive(false);
         if (typingInput == null) return;
@@ -115,10 +121,34 @@ public sealed class PreludeController : MonoBehaviour
 
     private void LoadPhrases()
     {
+        if (LanguageManager.IsEnglish)
+        {
+            phrases = new[]
+            {
+                new PreludePhrase { line = "Every solstice, the village of Aethel wakes with a sacred mission: gather tributes from land and sea." },
+                new PreludePhrase { line = "Offerings arrive from every corner. Bakers and farmers, young and old; every hand matters in this act of faith." },
+                new PreludePhrase { line = "Sun, the Ancient Guardian, sleeps there. His silence is peace and his purr is prosperity. We await his awakening with reverence." },
+                new PreludePhrase { line = "The fires are lit and the ceremonial stage is ready. Masters of the kitchen, it is time to orchestrate the sacred banquet." }
+            };
+            words = new[]
+            {
+                new PreludeWord { line = "GATHER" }, new PreludeWord { line = "OFFERINGS" },
+                new PreludeWord { line = "GUARDIAN" }, new PreludeWord { line = "BANQUET" }
+            };
+            return;
+        }
+
         if (phrasesJson == null) { Debug.LogError("PreludeController necesita el JSON de frases.", this); return; }
         PreludePhraseCollection collection = JsonUtility.FromJson<PreludePhraseCollection>(phrasesJson.text);
         phrases = collection != null && collection.prelude_phrases != null ? collection.prelude_phrases : new PreludePhrase[0];
         words = collection != null && collection.prelude_words != null ? collection.prelude_words : new PreludeWord[0];
+    }
+
+    private void HandleLanguageChanged(GameLanguage _)
+    {
+        if (transitioning) return;
+        LoadPhrases();
+        ShowCurrentSlide();
     }
 
     private void ShowCurrentSlide()
@@ -168,12 +198,12 @@ public sealed class PreludeController : MonoBehaviour
         if (tutorialWordRenderer != null
             && tutorialWordRenderer.RenderWord(paperWord, prefix, typed.Length))
         {
-            tutorialWordLabel.text = "Escribe:";
+            tutorialWordLabel.text = LanguageManager.Text("Escribe:", "Type:");
             tutorialWordLabel.alignment = TextAlignmentOptions.MidlineLeft;
             tutorialWordLabel.margin = new Vector4(30f, 0f, 0f, 0f);
             return;
         }
-        tutorialWordLabel.text = "Escribe: "
+        tutorialWordLabel.text = LanguageManager.Text("Escribe: ", "Type: ")
             + $"<color=#{green}>{Escape(expected.Substring(0, prefix))}</color>"
             + (typedTail.Length > 0 ? $"<color=#{red}>{typedTail}</color>" : string.Empty)
             + (pending.Length > 0 ? $"<color=#{gray}>{pending}</color>" : string.Empty);

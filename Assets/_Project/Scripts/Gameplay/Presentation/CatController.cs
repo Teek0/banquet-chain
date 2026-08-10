@@ -293,12 +293,7 @@ public sealed class CatController : MonoBehaviour
     private void HandleStepCompleted(RecipeStep step, int _)
     {
         if (step != null
-            && (step.ReactionType == KitchenReactionType.Serving
-                || string.Equals(
-                    step.ExpectedWord?.Trim(),
-                    "servir",
-                    System.StringComparison.OrdinalIgnoreCase
-                )))
+            && step.ReactionType == KitchenReactionType.Serving)
         {
             PlayReceiving();
         }
@@ -315,20 +310,20 @@ public sealed class CatController : MonoBehaviour
         {
             stateLabel.text = State switch
             {
-                CatVisualState.Requesting => "PIDE",
-                CatVisualState.Waiting => "OBSERVANDO",
-                CatVisualState.Receiving => "PROBANDO...",
-                CatVisualState.Relaxed => $"MÁS TRANQUILO · {Satisfaction}/3",
-                CatVisualState.Satisfied => "SATISFECHO · RONRONEANDO",
-                CatVisualState.Sleeping => "DURMIENDO",
-                _ => "HAMBRIENTO"
+                CatVisualState.Requesting => GameLocalization.Text("PIDE", "ASKING"),
+                CatVisualState.Waiting => GameLocalization.Text("OBSERVANDO", "WATCHING"),
+                CatVisualState.Receiving => GameLocalization.Text("PROBANDO...", "TASTING..."),
+                CatVisualState.Relaxed => GameLocalization.Text($"MÁS TRANQUILO · {Satisfaction}/3", $"CALMER · {Satisfaction}/3"),
+                CatVisualState.Satisfied => GameLocalization.Text("SATISFECHO · RONRONEANDO", "SATISFIED · PURRING"),
+                CatVisualState.Sleeping => GameLocalization.Text("DURMIENDO", "SLEEPING"),
+                _ => GameLocalization.Text("HAMBRIENTO", "HUNGRY")
             };
         }
 
         if (requestLabel != null)
         {
             requestLabel.text = string.IsNullOrWhiteSpace(CurrentRequest)
-                ? "ESPERANDO EL BANQUETE"
+                ? GameLocalization.Text("ESPERANDO EL BANQUETE", "WAITING FOR THE BANQUET")
                 : CurrentRequest;
         }
 

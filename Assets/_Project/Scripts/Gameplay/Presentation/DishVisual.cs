@@ -306,12 +306,12 @@ public sealed class DishVisual : MonoBehaviour
         stateLabel.text = State switch
         {
             DishVisualState.Building => totalTransformations > 0
-                ? $"PREPARANDO · {completedTransformations}/{totalTransformations}"
-                : "PREPARANDO",
-            DishVisualState.Ready => "PLATO LISTO",
-            DishVisualState.Serving => "ENTREGANDO...",
-            DishVisualState.Completed => "PLATO SERVIDO",
-            _ => "PLATO VACÍO"
+                ? GameLocalization.Text($"PREPARANDO · {completedTransformations}/{totalTransformations}", $"PREPARING · {completedTransformations}/{totalTransformations}")
+                : GameLocalization.Text("PREPARANDO", "PREPARING"),
+            DishVisualState.Ready => GameLocalization.Text("PLATO LISTO", "DISH READY"),
+            DishVisualState.Serving => GameLocalization.Text("ENTREGANDO...", "DELIVERING..."),
+            DishVisualState.Completed => GameLocalization.Text("PLATO SERVIDO", "DISH SERVED"),
+            _ => GameLocalization.Text("PLATO VACÍO", "EMPTY DISH")
         };
     }
 
@@ -417,11 +417,6 @@ public sealed class DishVisual : MonoBehaviour
 
     private static bool IsServingStep(RecipeStep step)
     {
-        return step.ReactionType == KitchenReactionType.Serving
-            || string.Equals(
-                step.ExpectedWord?.Trim(),
-                "servir",
-                StringComparison.OrdinalIgnoreCase
-            );
+        return step.ReactionType == KitchenReactionType.Serving;
     }
 }
