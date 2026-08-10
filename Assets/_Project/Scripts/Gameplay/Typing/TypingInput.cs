@@ -4,6 +4,14 @@ using UnityEngine.InputSystem;
 
 public sealed class TypingInput : MonoBehaviour
 {
+    private static readonly Key[] WebGlLetterKeys =
+    {
+        Key.A, Key.B, Key.C, Key.D, Key.E, Key.F, Key.G,
+        Key.H, Key.I, Key.J, Key.K, Key.L, Key.M, Key.N,
+        Key.O, Key.P, Key.Q, Key.R, Key.S, Key.T, Key.U,
+        Key.V, Key.W, Key.X, Key.Y, Key.Z
+    };
+
     private string expectedWord = string.Empty;
     private string normalizedWord = string.Empty;
     private string typedBuffer = string.Empty;
@@ -39,7 +47,13 @@ public sealed class TypingInput : MonoBehaviour
     {
         keyboard = Keyboard.current;
 
-        if (keyboard != null)
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            WebGLInput.captureAllKeyboardInput = true;
+#endif
+        }
+        else if (keyboard != null)
         {
             keyboard.onTextInput += HandleTextInput;
         }
@@ -47,7 +61,8 @@ public sealed class TypingInput : MonoBehaviour
 
     private void OnDisable()
     {
-        if (keyboard != null)
+        if (Application.platform != RuntimePlatform.WebGLPlayer
+            && keyboard != null)
         {
             keyboard.onTextInput -= HandleTextInput;
         }
@@ -64,6 +79,11 @@ public sealed class TypingInput : MonoBehaviour
         {
             ResetBackspaceTracking();
             return;
+        }
+
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            PollWebGlLetters(Keyboard.current);
         }
 
         bool backspaceDown = Keyboard.current.backspaceKey.isPressed;
@@ -96,15 +116,28 @@ public sealed class TypingInput : MonoBehaviour
             return;
         }
 
-        if (keyboard != null)
+        if (Application.platform != RuntimePlatform.WebGLPlayer
+            && keyboard != null)
         {
             keyboard.onTextInput -= HandleTextInput;
         }
 
         keyboard = currentKeyboard;
-        if (keyboard != null)
+        if (Application.platform != RuntimePlatform.WebGLPlayer
+            && keyboard != null)
         {
             keyboard.onTextInput += HandleTextInput;
+        }
+    }
+
+    private void PollWebGlLetters(Keyboard currentKeyboard)
+    {
+        for (int index = 0; index < WebGlLetterKeys.Length; index++)
+        {
+            if (currentKeyboard[WebGlLetterKeys[index]].wasPressedThisFrame)
+            {
+                ProcessCharacter((char)('a' + index));
+            }
         }
     }
 

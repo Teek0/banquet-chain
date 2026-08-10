@@ -19,6 +19,7 @@ public sealed class PreludeController : MonoBehaviour
     [SerializeField] private TextAsset phrasesJson;
     [SerializeField, Min(0.5f)] private float secondsPerSlide = 5f;
     [SerializeField, Min(0.05f)] private float fadeDuration = 0.6f;
+    [SerializeField, Min(0f)] private float finalSceneFadeDuration = 1.2f;
     [SerializeField] private string nextSceneName = "Playground";
     private PreludePhrase[] phrases = new PreludePhrase[0];
     private PreludeWord[] words = new PreludeWord[0];
@@ -102,7 +103,10 @@ public sealed class PreludeController : MonoBehaviour
     {
         if (AppRoot.Instance != null && AppRoot.Instance.SceneLoader != null)
         {
-            AppRoot.Instance.SceneLoader.LoadScene(nextSceneName);
+            AppRoot.Instance.SceneLoader.LoadScene(
+                nextSceneName,
+                finalSceneFadeDuration
+            );
             return;
         }
 
@@ -142,7 +146,11 @@ public sealed class PreludeController : MonoBehaviour
     }
 
     private void HandleTypingProgress(int _, string __) { RefreshTutorialWord(); }
-    private void HandleWordCompleted(string _) { RefreshTutorialWord(); StartCoroutine(AdvanceAfterCompletion()); }
+    private void HandleWordCompleted(string _)
+    {
+        RefreshTutorialWord();
+        StartCoroutine(AdvanceAfterCompletion());
+    }
     private IEnumerator AdvanceAfterCompletion() { yield return new WaitForSecondsRealtime(0.35f); Advance(); }
 
     private void RefreshTutorialWord()

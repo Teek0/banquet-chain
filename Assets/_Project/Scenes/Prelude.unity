@@ -877,6 +877,7 @@ MonoBehaviour:
   phrasesJson: {fileID: 4900000, guid: 57a9154dddcea6e4d867395a9e02744e, type: 3}
   secondsPerSlide: 5
   fadeDuration: 0.6
+  finalSceneFadeDuration: 1.2
   nextSceneName: Playground
 --- !u!114 &744439772
 MonoBehaviour:
