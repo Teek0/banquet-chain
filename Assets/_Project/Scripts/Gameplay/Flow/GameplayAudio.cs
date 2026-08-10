@@ -7,11 +7,14 @@ public enum GameplayAudioCue
 {
     None,
     CorrectLetter,
+    Backspace,
     Error,
     WordCompleted,
     KitchenAction,
     DishServed,
     CatReaction,
+    BubblePop,
+    FinalCelebration,
     FinalPurr
 }
 
@@ -30,12 +33,17 @@ public sealed class GameplayAudio : MonoBehaviour
     [SerializeField] private AudioMixerGroup musicGroup;
 
     [Header("Replaceable clips")]
-    [SerializeField] private AudioClip correctLetterClip;
+    [SerializeField] private AudioClip[] typingKeyClips =
+        System.Array.Empty<AudioClip>();
+    [SerializeField] private AudioClip[] backspaceClips =
+        System.Array.Empty<AudioClip>();
     [SerializeField] private AudioClip errorClip;
     [SerializeField] private AudioClip wordCompletedClip;
     [SerializeField] private AudioClip kitchenActionClip;
     [SerializeField] private AudioClip dishServedClip;
     [SerializeField] private AudioClip catReactionClip;
+    [SerializeField] private AudioClip bubblePopClip;
+    [SerializeField] private AudioClip finalCelebrationClip;
     [SerializeField] private AudioClip finalPurrClip;
     [SerializeField] private AudioClip kitchenAmbienceClip;
 
@@ -48,16 +56,21 @@ public sealed class GameplayAudio : MonoBehaviour
     private readonly List<AudioClip> generatedClips = new();
     private bool isSubscribed;
     private float lastLetterTime = float.NegativeInfinity;
+    private int lastTypingKeyIndex = -1;
+    private int lastBackspaceIndex = -1;
 
     public GameplayAudioCue LastCue { get; private set; }
         = GameplayAudioCue.None;
     public int PlayedCueCount { get; private set; }
-    public bool HasCompleteFeedbackSet => !ReferenceEquals(correctLetterClip, null)
+    public bool HasCompleteFeedbackSet => HasAnyClip(typingKeyClips)
+        && HasAnyClip(backspaceClips)
         && !ReferenceEquals(errorClip, null)
         && !ReferenceEquals(wordCompletedClip, null)
         && !ReferenceEquals(kitchenActionClip, null)
         && !ReferenceEquals(dishServedClip, null)
         && !ReferenceEquals(catReactionClip, null)
+        && !ReferenceEquals(bubblePopClip, null)
+        && !ReferenceEquals(finalCelebrationClip, null)
         && !ReferenceEquals(finalPurrClip, null)
         && !ReferenceEquals(kitchenAmbienceClip, null);
     public int AvailableClipCount
@@ -65,12 +78,15 @@ public sealed class GameplayAudio : MonoBehaviour
         get
         {
             int count = 0;
-            count += !ReferenceEquals(correctLetterClip, null) ? 1 : 0;
+            count += HasAnyClip(typingKeyClips) ? 1 : 0;
+            count += HasAnyClip(backspaceClips) ? 1 : 0;
             count += !ReferenceEquals(errorClip, null) ? 1 : 0;
             count += !ReferenceEquals(wordCompletedClip, null) ? 1 : 0;
             count += !ReferenceEquals(kitchenActionClip, null) ? 1 : 0;
             count += !ReferenceEquals(dishServedClip, null) ? 1 : 0;
             count += !ReferenceEquals(catReactionClip, null) ? 1 : 0;
+            count += !ReferenceEquals(bubblePopClip, null) ? 1 : 0;
+            count += !ReferenceEquals(finalCelebrationClip, null) ? 1 : 0;
             count += !ReferenceEquals(finalPurrClip, null) ? 1 : 0;
             count += !ReferenceEquals(kitchenAmbienceClip, null) ? 1 : 0;
             return count;
@@ -185,14 +201,16 @@ public sealed class GameplayAudio : MonoBehaviour
 
         typingInput.CorrectCharacterEntered += HandleCorrectCharacter;
         typingInput.IncorrectCharacterEntered += HandleIncorrectCharacter;
+        typingInput.BackspacePerformed += HandleBackspace;
         typingInput.WordCompleted += HandleWordCompleted;
         recipeRunner.StepCompleted += HandleStepCompleted;
+        WorldSpriteRecipeBubbleUI.BubbleShown += HandleBubbleShown;
 
         if (gameFlow != null)
         {
             gameFlow.GameStarted += HandleGameStarted;
             gameFlow.DishCompleted += HandleDishCompleted;
-            gameFlow.BanquetCompleted += HandleBanquetCompleted;
+            gameFlow.StateChanged += HandleGameFlowStateChanged;
         }
 
         isSubscribed = true;
@@ -209,6 +227,7 @@ public sealed class GameplayAudio : MonoBehaviour
         {
             typingInput.CorrectCharacterEntered -= HandleCorrectCharacter;
             typingInput.IncorrectCharacterEntered -= HandleIncorrectCharacter;
+            typingInput.BackspacePerformed -= HandleBackspace;
             typingInput.WordCompleted -= HandleWordCompleted;
         }
 
@@ -217,11 +236,13 @@ public sealed class GameplayAudio : MonoBehaviour
             recipeRunner.StepCompleted -= HandleStepCompleted;
         }
 
+        WorldSpriteRecipeBubbleUI.BubbleShown -= HandleBubbleShown;
+
         if (gameFlow != null)
         {
             gameFlow.GameStarted -= HandleGameStarted;
             gameFlow.DishCompleted -= HandleDishCompleted;
-            gameFlow.BanquetCompleted -= HandleBanquetCompleted;
+            gameFlow.StateChanged -= HandleGameFlowStateChanged;
         }
 
         isSubscribed = false;
@@ -237,16 +258,33 @@ public sealed class GameplayAudio : MonoBehaviour
         }
 
         lastLetterTime = now;
-        PlayOneShot(
+        PlayRandomOneShot(
             GameplayAudioCue.CorrectLetter,
-            correctLetterClip,
-            letterVolume
+            typingKeyClips,
+            letterVolume,
+            ref lastTypingKeyIndex
         );
     }
 
     private void HandleIncorrectCharacter(char _, int __)
     {
+        PlayRandomOneShot(
+            GameplayAudioCue.CorrectLetter,
+            typingKeyClips,
+            letterVolume,
+            ref lastTypingKeyIndex
+        );
         PlayOneShot(GameplayAudioCue.Error, errorClip, eventVolume);
+    }
+
+    private void HandleBackspace()
+    {
+        PlayRandomOneShot(
+            GameplayAudioCue.Backspace,
+            backspaceClips,
+            letterVolume,
+            ref lastBackspaceIndex
+        );
     }
 
     private void HandleWordCompleted(string _)
@@ -291,8 +329,32 @@ public sealed class GameplayAudio : MonoBehaviour
         );
     }
 
-    private void HandleBanquetCompleted()
+    private void HandleBubbleShown()
     {
+        PlayOneShot(
+            GameplayAudioCue.BubblePop,
+            bubblePopClip,
+            eventVolume
+        );
+    }
+
+    private void HandleGameFlowStateChanged(GameFlowState state)
+    {
+        if (state == GameFlowState.FinalCelebration)
+        {
+            PlayOneShot(
+                GameplayAudioCue.FinalCelebration,
+                finalCelebrationClip,
+                eventVolume
+            );
+            return;
+        }
+
+        if (state != GameFlowState.FinalSleeping)
+        {
+            return;
+        }
+
         LastCue = GameplayAudioCue.FinalPurr;
         PlayedCueCount++;
 
@@ -320,6 +382,70 @@ public sealed class GameplayAudio : MonoBehaviour
         }
     }
 
+    private void PlayRandomOneShot(
+        GameplayAudioCue cue,
+        AudioClip[] clips,
+        float volume,
+        ref int lastIndex
+    )
+    {
+        AudioClip clip = SelectRandomClip(clips, ref lastIndex);
+        PlayOneShot(cue, clip, volume);
+    }
+
+    private static AudioClip SelectRandomClip(
+        AudioClip[] clips,
+        ref int lastIndex
+    )
+    {
+        if (clips == null || clips.Length == 0)
+        {
+            return null;
+        }
+
+        int validCount = 0;
+        foreach (AudioClip clip in clips)
+        {
+            if (clip != null)
+            {
+                validCount++;
+            }
+        }
+
+        if (validCount == 0)
+        {
+            return null;
+        }
+
+        int target = UnityEngine.Random.Range(0, validCount);
+        int selectedIndex = -1;
+        for (int index = 0; index < clips.Length; index++)
+        {
+            if (clips[index] == null)
+            {
+                continue;
+            }
+
+            if (target-- == 0)
+            {
+                selectedIndex = index;
+                break;
+            }
+        }
+
+        if (validCount > 1 && selectedIndex == lastIndex)
+        {
+            do
+            {
+                selectedIndex = (selectedIndex + 1) % clips.Length;
+            }
+            while (clips[selectedIndex] == null);
+        }
+
+        lastIndex = selectedIndex;
+        return clips[selectedIndex];
+    }
+
     private void StartAmbience()
     {
         if (musicSource == null
@@ -344,14 +470,54 @@ public sealed class GameplayAudio : MonoBehaviour
 
     private void CreateFallbackClips()
     {
-        correctLetterClip ??= CreateTone("Fallback Correct", 760f, 0.045f, 0.12f);
+        if (!HasAnyClip(typingKeyClips))
+        {
+            typingKeyClips = new[]
+            {
+                CreateTone("Fallback Correct", 760f, 0.045f, 0.12f)
+            };
+        }
+
+        if (!HasAnyClip(backspaceClips))
+        {
+            backspaceClips = new[]
+            {
+                CreateTone("Fallback Backspace", 520f, 0.055f, 0.1f)
+            };
+        }
+
         errorClip ??= CreateTone("Fallback Error", 180f, 0.12f, 0.22f);
         wordCompletedClip ??= CreateTone("Fallback Word", 980f, 0.16f, 0.18f);
         kitchenActionClip ??= CreateTone("Fallback Action", 420f, 0.18f, 0.2f);
         dishServedClip ??= CreateTone("Fallback Dish", 620f, 0.28f, 0.24f);
         catReactionClip ??= CreateTone("Fallback Cat", 300f, 0.32f, 0.2f);
+        bubblePopClip ??= CreateTone("Fallback Bubble", 720f, 0.1f, 0.18f);
+        finalCelebrationClip ??= CreateTone(
+            "Fallback Final Celebration",
+            880f,
+            0.45f,
+            0.2f
+        );
         finalPurrClip ??= CreatePurr("Fallback Purr", 1.2f, 0.18f);
         kitchenAmbienceClip ??= CreateAmbience("Fallback Kitchen", 2f, 0.05f);
+    }
+
+    private static bool HasAnyClip(AudioClip[] clips)
+    {
+        if (clips == null)
+        {
+            return false;
+        }
+
+        foreach (AudioClip clip in clips)
+        {
+            if (clip != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private AudioClip CreateTone(

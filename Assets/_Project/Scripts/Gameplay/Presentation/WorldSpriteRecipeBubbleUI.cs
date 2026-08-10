@@ -2,6 +2,8 @@ using UnityEngine;
 
 public sealed class WorldSpriteRecipeBubbleUI : MonoBehaviour
 {
+    public static event System.Action BubbleShown;
+
     [Header("Source")]
     [SerializeField] private RecipeRunner recipeRunner;
     [SerializeField] private WorldRecipeBubbleMode mode;
@@ -15,6 +17,7 @@ public sealed class WorldSpriteRecipeBubbleUI : MonoBehaviour
     [SerializeField, Min(0.01f)] private float iconMaxLocalSize = 6.5f;
 
     private bool isSubscribed;
+    private bool isVisible;
 
     public bool CanPresentStep(RecipeStep step)
     {
@@ -170,11 +173,18 @@ public sealed class WorldSpriteRecipeBubbleUI : MonoBehaviour
         iconRenderer.sprite = sprite;
         FitIcon(sprite);
         SetRenderersEnabled(true);
+
+        if (!isVisible)
+        {
+            isVisible = true;
+            BubbleShown?.Invoke();
+        }
     }
 
     private void Hide()
     {
         SetRenderersEnabled(false);
+        isVisible = false;
     }
 
     private void SetRenderersEnabled(bool visible)

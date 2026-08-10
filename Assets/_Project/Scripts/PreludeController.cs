@@ -28,7 +28,14 @@ public sealed class PreludeController : MonoBehaviour
 
     private void Awake()
     {
-        if (typingInput == null) typingInput = gameObject.GetComponent<TypingInput>() ?? gameObject.AddComponent<TypingInput>();
+        if (typingInput == null)
+            typingInput = GetComponent<TypingInput>();
+        if (typingInput == null)
+        {
+            Debug.LogError("PreludeController necesita TypingInput asignado.", this);
+            enabled = false;
+            return;
+        }
         if (tutorialWordLabel == null)
         {
             foreach (TMP_Text candidate in GetComponentsInChildren<TMP_Text>(true))

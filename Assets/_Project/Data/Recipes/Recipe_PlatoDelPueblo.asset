@@ -53,7 +53,7 @@ MonoBehaviour:
     durationBeforeNextStep: 0.4
     transformsDish: 1
   - expectedWord: amasar
-    icon: {fileID: -4968706804584702455, guid: 8cc118a3153cd704591df6cc2b8d92b0, type: 3}
+    icon: {fileID: 21300000, guid: 8cc118a3153cd704591df6cc2b8d92b0, type: 3}
     actorId: servicio
     reactionType: 1
     durationBeforeNextStep: 0.25

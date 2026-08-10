@@ -324,7 +324,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
   pausePanel: {fileID: 7041801486716201981}
+  pauseContent: {fileID: 2286911680185352561}
+  settingsPanel: {fileID: 0}
   firstSelected: {fileID: 7669762574054694128}
+  settingsFirstSelected: {fileID: 0}
+  settingsReturnSelected: {fileID: 0}
   inputActions: {fileID: -944628639613478452, guid: 5b64050c085524244a144ac3b691897f, type: 3}
   pauseActionName: Gameplay/Pause
   mainMenuSceneName: MainMenu

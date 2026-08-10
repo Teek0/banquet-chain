@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: 1edeeaf42a07e4346a00e3d00135f484
+guid: fc350ff517fa1a24eaa0d65ca1fd68e2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2096139880416749029
-    second: steam_puffs_0
+      213: -3133757659336083839
+    second: cook02_work_cloud_02_0
   - first:
-      213: 2089399510768364869
-    second: steam_puffs_1
+      213: 8375477630167997116
+    second: cook02_work_cloud_02_1
   - first:
-      213: 2935587800385915542
-    second: steam_puffs_2
+      213: -7058804584470597485
+    second: cook02_work_cloud_02_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -119,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: steam_puffs_0
+      name: cook02_work_cloud_02_0
       rect:
         serializedVersion: 2
-        x: 23
-        y: 41
-        width: 243
-        height: 369
+        x: 108
+        y: 49
+        width: 1090
+        height: 1050
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,20 +134,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b1ada3472e309e2e0800000000000000
-      internalID: -2096139880416749029
+      spriteID: 186fc1f1308a284d0800000000000000
+      internalID: -3133757659336083839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: steam_puffs_1
+      name: cook02_work_cloud_02_1
       rect:
         serializedVersion: 2
-        x: 60
-        y: 389
-        width: 408
-        height: 598
+        x: 749
+        y: 988
+        width: 141
+        height: 134
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 54d2931f8c90ffc10800000000000000
-      internalID: 2089399510768364869
+      spriteID: cbad46a878cab3470800000000000000
+      internalID: 8375477630167997116
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: steam_puffs_2
+      name: cook02_work_cloud_02_2
       rect:
         serializedVersion: 2
-        x: 364
-        y: 23
-        width: 275
-        height: 439
+        x: 97
+        y: 307
+        width: 129
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69a09f01d8d4db820800000000000000
-      internalID: 2935587800385915542
+      spriteID: 3903bbb21a61a0e90800000000000000
+      internalID: -7058804584470597485
       vertices: []
       indices: 
       edges: []
@@ -198,9 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      steam_puffs_0: -2096139880416749029
-      steam_puffs_1: 2089399510768364869
-      steam_puffs_2: 2935587800385915542
+      cook02_work_cloud_02_0: -3133757659336083839
+      cook02_work_cloud_02_1: 8375477630167997116
+      cook02_work_cloud_02_2: -7058804584470597485
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

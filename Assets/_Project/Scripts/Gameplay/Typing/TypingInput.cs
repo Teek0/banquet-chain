@@ -20,6 +20,7 @@ public sealed class TypingInput : MonoBehaviour
 
     public event Action<char, int> CorrectCharacterEntered;
     public event Action<char, int> IncorrectCharacterEntered;
+    public event Action BackspacePerformed;
     public event Action<int, string> ProgressChanged;
     public event Action<string> WordCompleted;
 
@@ -215,6 +216,7 @@ public sealed class TypingInput : MonoBehaviour
 
         typedBuffer = typedBuffer.Substring(0, typedBuffer.Length - 1);
         RecalculateProgress();
+        BackspacePerformed?.Invoke();
         ProgressChanged?.Invoke(progress, typedBuffer);
     }
 

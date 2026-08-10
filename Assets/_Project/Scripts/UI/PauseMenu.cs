@@ -6,7 +6,11 @@ using UnityEngine.InputSystem;
 public sealed class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseContent;
+    [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject firstSelected;
+    [SerializeField] private GameObject settingsFirstSelected;
+    [SerializeField] private GameObject settingsReturnSelected;
     [SerializeField] private InputActionAsset inputActions;
     [SerializeField] private string pauseActionName = "Gameplay/Pause";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
@@ -29,6 +33,11 @@ public sealed class PauseMenu : MonoBehaviour
         }
 
         pausePanel.SetActive(false);
+
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
     }
 
     private void OnEnable()
@@ -67,7 +76,14 @@ public sealed class PauseMenu : MonoBehaviour
 
         if (pausePressed || keyboardPausePressed)
         {
-            SetPaused(!IsPaused);
+            if (IsPaused && settingsPanel != null && settingsPanel.activeSelf)
+            {
+                ShowPauseMenu();
+            }
+            else
+            {
+                SetPaused(!IsPaused);
+            }
         }
     }
 
@@ -102,6 +118,44 @@ public sealed class PauseMenu : MonoBehaviour
     public void Resume()
     {
         SetPaused(false);
+    }
+
+    public void ShowSettings()
+    {
+        if (!IsPaused || settingsPanel == null)
+        {
+            return;
+        }
+
+        if (pauseContent != null)
+        {
+            pauseContent.SetActive(false);
+        }
+
+        settingsPanel.SetActive(true);
+        Select(settingsFirstSelected);
+    }
+
+    public void ShowPauseMenu()
+    {
+        if (!IsPaused)
+        {
+            return;
+        }
+
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+
+        if (pauseContent != null)
+        {
+            pauseContent.SetActive(true);
+        }
+
+        Select(settingsReturnSelected != null
+            ? settingsReturnSelected
+            : firstSelected);
     }
 
     public void RestartScene()
@@ -152,14 +206,23 @@ public sealed class PauseMenu : MonoBehaviour
             pausePanel.SetActive(paused);
         }
 
-        if (EventSystem.current != null)
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+
+        if (pauseContent != null)
+        {
+            pauseContent.SetActive(true);
+        }
+
+        if (paused)
+        {
+            Select(firstSelected);
+        }
+        else if (EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(null);
-
-            if (paused && firstSelected != null)
-            {
-                EventSystem.current.SetSelectedGameObject(firstSelected);
-            }
         }
 
         Cursor.lockState = CursorLockMode.None;
@@ -176,6 +239,20 @@ public sealed class PauseMenu : MonoBehaviour
         if (typingInput == null)
         {
             typingInput = FindFirstObjectByType<TypingInput>();
+        }
+    }
+
+    private static void Select(GameObject target)
+    {
+        if (EventSystem.current == null)
+        {
+            return;
+        }
+
+        EventSystem.current.SetSelectedGameObject(null);
+        if (target != null)
+        {
+            EventSystem.current.SetSelectedGameObject(target);
         }
     }
 

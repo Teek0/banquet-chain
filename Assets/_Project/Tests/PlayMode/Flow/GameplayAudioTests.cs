@@ -33,7 +33,7 @@ public sealed class GameplayAudioTests
         Assert.That(
             setup.Audio.HasCompleteFeedbackSet,
             Is.True,
-            $"Clips disponibles: {setup.Audio.AvailableClipCount}/8"
+            $"Clips disponibles: {setup.Audio.AvailableClipCount}/11"
         );
     }
 
@@ -49,6 +49,7 @@ public sealed class GameplayAudioTests
         Assert.That(setup.Audio.LastCue, Is.EqualTo(GameplayAudioCue.Error));
 
         setup.Input.ProcessBackspace();
+        Assert.That(setup.Audio.LastCue, Is.EqualTo(GameplayAudioCue.Backspace));
         setup.Input.ProcessCharacter('a');
         setup.Input.ProcessCharacter('n');
         yield return null;
