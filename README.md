@@ -4,70 +4,6 @@ Prototipo 2D de mecanografía hecho con Unity 6 y URP 2D. El juego transcurre
 en una cocina fija: el jugador completa palabras para ejecutar acciones,
 avanzar recetas y mantener en marcha el banquete.
 
-El GDD vive en la carpeta externa de diseño de Takernal Jam. El plan de
-implementación y la memoria operativa viven en `documentacion/`; esa carpeta
-es local y no se versiona.
-
-## Estado actual
-
-Están terminados los bloques 01 a 05 y 07 a 20 del backlog. Ya existe una
-partida completa provisional dentro del Editor:
-
-- `Prelude` presenta cuatro imágenes con las frases de
-  `Assets/_Project/Data/prelude_phrases.json`; cada lámina avanza con tiempo,
-  clic o Espacio/Enter mediante un fundido y termina en `Playground`. Cada
-  lámina exige escribir su palabra de `prelude_words`; el texto colorea el
-  prefijo correcto en verde, los errores en rojo y lo pendiente en gris,
-  usando las letras de `font_paper_geometric`.
-- `Playground` conserva cámara fija, HUD, pausa y arranque mediante `_Bootstrap`.
-- `TypingInput` procesa una palabra activa, normaliza mayúsculas y tildes,
-  admite Backspace y emite eventos de progreso, error y finalización.
-- `WordBubbleUI` presenta la palabra activa y su feedback sin consultar el
-  estado cada frame.
-- Existen tres recetas editables: Pan caliente, Sopa de verduras y El Plato del
-  Pueblo.
-- `RecipeRunner` recorre una receta como máquina de estados, bloquea la entrada
-  mientras se ejecuta cada acción y permite reiniciar sin recargar la escena.
-- `GameFlow` recorre Pan caliente, Sopa de verduras y El Plato del Pueblo en
-  ese orden, sin intervención desde la consola o el Inspector.
-- El HUD superior muestra plato, pedido, estado, paso activo, pasos posteriores
-  atenuados y la indicación `ESC · PAUSA` sin consultar datos cada frame.
-- `Despensa`, `Horno` y `Servicio` se resaltan según el paso activo, anticipan
-  con el progreso escrito, reaccionan al completar la palabra y celebran el
-  plato terminado.
-- El plato central agrega capas provisionales después de los pasos que lo
-  transforman, distingue el estado listo y se desplaza al completar `servir`.
-- El gato presenta cada pedido, reacciona al recibir un plato y aumenta su
-  satisfacción hasta el ronroneo final.
-- Tras el tercer plato aparece el cierre de partida y se continúa a `Credits`
-  mediante el cargador de escenas existente.
-- Las recetas largas usan explícitamente `Despensa`, `Horno` y `Servicio`; la
-  palabra `compartir` hace reaccionar a toda la cocina antes de la entrega.
-- Pan caliente incluye un tutorial contextual que explica la palabra activa,
-  letras correctas, error, Backspace y la reacción de la cocina; se oculta al
-  terminar y vuelve a aparecer al reiniciar.
-- La pausa suspende la mecanografía conservando el progreso, la restaura al
-  continuar y muestra una indicación para recuperar el foco en WebGL.
-- `GameplayAudio` distingue acierto, error, palabra, acción, plato, reacción
-  del gato y ronroneo; usa `Music`/`SFX` del mixer y fallbacks sustituibles.
-- El menú explica la premisa y controles; el final comunica la contribución de
-  todo el pueblo y `Credits` contiene campos editables de autoría y licencias.
-- `Playground` y `Credits` usan referencia 960 × 600; `MainMenu` tiene una
-  edición paralela a 1960 × 1080 pendiente de confirmar. La palabra activa se
-  autoajusta, los estados no dependen solo del color y las reacciones evitan
-  movimiento excesivo.
-- La pasada integral cubre errores, Backspace, teclas ignoradas, pausa,
-  reinicios intermedios, tres recetas, final y referencias críticas.
-- La palabra activa usa el alfabeto gráfico de papel: gris para letras
-  pendientes y rojo para el prefijo escrito correctamente.
-- El búfer de escritura pasa 15/15 pruebas específicas y Play Mode pasa 24/24.
-- La batería Edit Mode queda en 49/50: solo falla la comprobación de 960 × 600
-  de `MainMenu` por la edición paralela indicada arriba.
-
-No hay defectos bloqueantes confirmados dentro del Editor. El siguiente y
-último bloque es T21, la build candidata; queda sin ejecutar hasta recibir una
-solicitud explícita.
-
 ## Flujo de escenas
 
 La aplicación comienza en `Boot`, crea el `AppRoot` persistente y carga
@@ -129,36 +65,6 @@ que su vocal base porque el recurso no contiene variantes con diacríticos.
 | Pausa | Escape o Start en gamepad |
 | Navegar menús | Mouse, teclado o gamepad |
 
-## Estructura relevante
-
-- `Assets/_Project/Scenes/Playground.unity`: escena jugable y cocina fija.
-- `Assets/_Project/Scenes/Prelude.unity`: prólogo de cuatro láminas con texto
-  leído desde JSON y transición por fundido.
-- `Assets/_Project/Scripts/Gameplay/Flow/PreludeController.cs`: controla el
-  orden, temporización, entrada y navegación del prólogo.
-- `Assets/_Project/Scripts/Gameplay/Typing/`: normalizador y entrada de texto.
-- `Assets/_Project/Scripts/Gameplay/Recipes/`: datos, pasos y `RecipeRunner`.
-- `Assets/_Project/Scripts/Gameplay/Presentation/`: actores visuales,
-  coordinación de actores, plato, gato y render de palabras con letras de
-  papel por eventos.
-- `Assets/_Project/Scripts/Gameplay/Flow/`: coordinación de las tres recetas,
-  tutorial, audio, celebraciones y cierre de partida.
-- `Assets/_Project/Data/Recipes/`: los tres platos editables desde el Inspector.
-- `Assets/_Project/Scripts/UI/Gameplay/WordBubbleUI.cs`: palabra y feedback.
-- `Assets/_Project/font_paper_geometric/PaperAlphabetGlyphSet.asset`: las 27
-  letras grises y rojas utilizadas por la palabra activa.
-- `Assets/_Project/Scripts/UI/Gameplay/RecipeHUDUI.cs`: pedido y progreso por
-  eventos del corredor.
-- `Assets/_Project/Tests/EditMode/`: 50 pruebas de escritura, datos, HUD y
-  escenas de presentación.
-- `Assets/_Project/Tests/PlayMode/`: 24 pruebas del ciclo, actores, plato, gato
-  y flujo completo.
-- `Assets/_Project/Prefabs/PauseUI.prefab`: overlay de pausa compartido.
-
-Los scripts y prefabs heredados de plataformas se conservan como referencia,
-pero `Player2D`, `PlayerMotor2D` y `CameraFollow2D` no forman parte de la
-composición actual de `Playground`.
-
 ## Presentación de escenario
 
 Los chefs visibles son objetos del escenario con `SpriteRenderer`: `Chef1`
@@ -202,16 +108,3 @@ final ya recorre comer, felicidad y sueño antes de abrir `Credits`.
     las 24 pruebas de `PlayMode`.
 12. Opcionalmente, inicia desde `Boot` y recorre
     `MainMenu → Playground → Credits → MainMenu`.
-
-La compilación WebGL está pospuesta. El juego ya está completo y validado dentro
-del Editor, pero T21 no se ejecutará sin una solicitud explícita de build.
-
-## Convenciones
-
-- Assets propios dentro de `Assets/_Project`.
-- No se agregan escenas, paquetes o singletons sin una necesidad del backlog.
-- Los cambios de escena y prefab deben preservar referencias serializadas.
-- Los elementos visuales actuales son placeholders reemplazables por los assets
-  definitivos sin cambiar la lógica de receta.
-- `documentacion/` contiene el backlog, el prompt de trabajo y memoria privada
-  del proyecto; el GDD permanece en la carpeta externa de diseño.
